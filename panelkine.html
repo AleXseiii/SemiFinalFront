@@ -3,96 +3,92 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel del Kinesiólogo | Centro de Salud y Bienestar</title>
+  <title>Panel del Kinesiólogo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./home.css" />
 </head>
 <body data-page="panelkine">
-  <div class="layout">
-    <header class="site-header">
-      <div class="brand">
-        <div class="brand__logo"></div>
-        <div class="brand__text">
-          <span>Centro de salud y</span>
-          <span class="brand__text--bold">Bienestar</span>
-        </div>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <div class="sidebar__logo"></div>
+        <div class="sidebar__title">Centro de Salud y Bienestar</div>
       </div>
-      <nav class="site-nav">
-  <a data-nav-target="home" href="./home.html#inicio">Inicio</a>
-  <a data-nav-target="valores" href="./valores.html">Valores</a>
-  <a data-nav-target="quienes" href="./quienes.html">¿Quiénes somos?</a>
-  <a data-nav-target="agendar" href="./agendar.html">Agendar hora</a>
-  <a data-nav-target="ingresar" href="./ingreseAqui.html" data-auth-link>
-    <span data-auth-label>Ingresar</span>
-    <span class="site-nav__user" data-auth-user>Invitado</span>
-  </a>
-</nav>
-    </header>
+      <nav class="sidebar__nav" aria-label="Navegación principal">
+        <a class="sidebar__link is-active" href="./panelkine.html">Panel</a>
+        <a class="sidebar__link" href="./kine_perfil.html">Perfil</a>
+        <a class="sidebar__link" href="./kine_horario.html">Horario</a>
+      </nav>
+    </aside>
+    <main class="dashboard__main" aria-labelledby="panel-title">
+      <header class="page-header">
+        <div class="page-header__titles">
+          <p class="page-header__eyebrow">Panel profesional</p>
+          <h1 class="page-header__title" id="panel-title">Agenda del kinesiólogo</h1>
+          <p class="page-header__subtitle">Gestiona próximas consultas y registra los comentarios de cada sesión.</p>
+        </div>
+        <button class="button button--ghost" type="button" data-kine-refresh>Actualizar</button>
+      </header>
 
-    <main class="kine" aria-labelledby="kine-title">
-      <div class="kine__hero">
-        <div>
-          <p class="kine__eyebrow">Panel profesional</p>
-          <h1 class="kine__title" id="kine-title">Panel del kinesiólogo</h1>
-          <p class="kine__subtitle">Gestiona tus próximas consultas y registra el avance de cada paciente. El acceso está disponible solo con la sesión de kinesiólogo iniciada.</p>
-        </div>
-        <button class="kine__button" type="button" data-kine-refresh>Actualizar agenda</button>
-      </div>
-       <div class="kine__grid">
-        <section class="kine-card" aria-labelledby="upcoming-title">
-          <div class="kine-card__head">
-            <h2 class="kine-card__title" id="upcoming-title">Agenda próxima</h2>
-            <span class="kine-pill" data-kine-count>0</span>
+      <div class="grid grid--two-columns">
+        <section class="card" aria-labelledby="upcoming-title">
+          <div class="card__head">
+            <div>
+              <p class="card__eyebrow">Consultas</p>
+              <h2 class="card__title" id="upcoming-title">Próximas consultas</h2>
+            </div>
+            <span class="pill" data-kine-count>0</span>
           </div>
-          <div class="kine__list" data-kine-upcoming>
-            <div class="kine__empty">Cargando…</div>
+          <div class="list list--scroll" data-kine-upcoming>
+            <div class="empty">Cargando agenda…</div>
           </div>
         </section>
-        <section class="kine-card" aria-labelledby="detail-title">
-          <div class="kine-card__head">
+        
+        <section class="card" aria-labelledby="detail-title">
+          <div class="card__head">
             <div>
-              <p class="kine__eyebrow">Detalle</p>
-              <h2 class="kine-card__title" id="detail-title">Consulta seleccionada</h2>
+              <p class="card__eyebrow">Detalle</p>
+              <h2 class="card__title" id="detail-title">Consulta seleccionada</h2>
             </div>
-            <span class="kine-badge" data-kine-status>-</span>
+            <span class="badge" data-kine-status>—</span>
           </div>
-          <div class="kine__detail" data-kine-detail hidden>
-            <div class="kine__detail-grid">
-              <div class="kine__kv">
-                <span class="kine__kv-key">Paciente</span>
-                <span class="kine__kv-value" data-kine-patient>-</span>
+          
+          <div class="detail" data-kine-detail hidden>
+            <dl class="detail__grid">
+              <div class="detail__item">
+                <dt class="detail__label">Paciente</dt>
+                <dd class="detail__value" data-kine-patient>—</dd>
               </div>
-              <div class="kine__kv">
-                <span class="kine__kv-key">Fecha y hora</span>
-                <span class="kine__kv-value" data-kine-when>-</span>
+              <div class="detail__item">
+                <dt class="detail__label">Fecha y hora</dt>
+                <dd class="detail__value" data-kine-when>—</dd>
               </div>
+              </dl>
+
+            <div class="actions">
+              <button class="button button--solid" type="button" data-kine-confirm disabled>Confirmar</button>
+              <button class="button button--danger" type="button" data-kine-cancel disabled>Cancelar</button>
             </div>
-            <div class="kine__actions">
-              <button class="kine__button kine__button--solid" type="button" data-kine-confirm disabled>Confirmar</button>
-              <button class="kine__button kine__button--danger" type="button" data-kine-cancel disabled>Cancelar</button>
-            </div>
-            <div class="kine__note">
-              <h3 class="kine__note-title">Comentario de sesión</h3>
-              <p>Al guardar un comentario, la sesión se marcará como <strong>realizada</strong> y el paciente lo verá reflejado en su historial.</p>
+            <div class="note">
+              <h3 class="note__title">Comentario de sesión</h3>
+              <p class="note__text">Al guardar un comentario, la sesión se marca como realizada y el paciente lo verá en su historial.</p>
             </div>
 
-            <label class="visually-hidden" for="comentario">Comentario de sesión</label>
-            <textarea id="comentario" data-kine-comment placeholder="Escribe el avance del paciente…"></textarea>
-            <div class="kine__actions">
-              <button class="kine__button kine__button--ghost" type="button" data-kine-save-comment disabled>Guardar comentario (marca realizada)</button>
-              <span class="kine__message" data-kine-msg></span>
-           
+            <label class="visually-hidden" for="kine-comment">Comentario de sesión</label>
+            <textarea id="kine-comment" class="textarea" data-kine-comment placeholder="—" rows="5"></textarea>
+            <div class="actions actions--between">
+              <button class="button button--ghost" type="button" data-kine-save-comment disabled>Guardar comentario</button>
+              <span class="status" data-kine-msg></span>
             </div>
-             <div class="kine__empty" data-kine-detail-empty>
-            Selecciona una consulta para ver el detalle.
           </div>
-          </div>
+          <div class="empty" data-kine-detail-empty>Selecciona una consulta para ver el detalle.</div>
         </section>
          </div>
     </main>
   </div>
+  
   <script src="./api.js" type="module"></script>
   <script src="./request.js" type="module"></script>
   <script src="./app.js" type="module"></script>
