@@ -180,12 +180,11 @@ function isKineUser(user) {
 }
 
 function updateAuthUI() {
-  const loginLink = document.querySelector("[data-auth-link]");
-  const labelSpan = document.querySelector("[data-auth-label]");
-  const userSpan  = document.querySelector("[data-auth-user]");
+  const loginLink = document.querySelector("[data-auth-action]");
+  const userLink = document.querySelector("[data-auth-user-link]");
 
   // Si esta página no tiene header con estos elementos, salimos.
-  if (!loginLink || !labelSpan || !userSpan) return;
+  if (!loginLink || !userLink) return;
 
   const token   = localStorage.getItem("authToken");
   const rawUser = localStorage.getItem("user");
@@ -199,23 +198,30 @@ function updateAuthUI() {
       console.warn("No se pudo parsear user desde localStorage:", e);
     }
 
-    labelSpan.textContent = "Cerrar sesión";
-    userSpan.textContent  = `Hola, ${name}`;
+    loginLink.textContent = "Cerrar sesión";
+    userLink.textContent  = `Hola, ${name}`;
 
     loginLink.href = "#";
     loginLink.onclick = (ev) => {
       ev.preventDefault();
       localStorage.removeItem("authToken");
       localStorage.removeItem("user");
+      localStorage.removeItem("role");
       window.location.href = "ingreseAqui.html";
     };
+
+    userLink.href = "historial.html";
+    userLink.onclick = null;
   } else {
-    labelSpan.textContent = "Ingresar";
-    userSpan.textContent  = "Invitado";
+    loginLink.textContent = "Ingresar";
+    userLink.textContent  = "Invitado";
     loginLink.href = "ingreseAqui.html";
+    userLink.href = "ingreseAqui.html";
     loginLink.onclick = null;
+    userLink.onclick = null;
   }
 }
+
 
 // Compatibilidad con llamadas existentes
 window.updateAuthUI = updateAuthUI;
@@ -1002,13 +1008,26 @@ function initPatientDataPage() {
       } catch (e) {}
 
       if (data.token) {
-        localStorage.setItem("authToken", data.token);
-      if (data.role) localStorage.setItem("role", data.role);
-      if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+  localStorage.setItem("authToken", data.token);
 }
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
+
+if (data.role) {
+  localStorage.setItem("role", data.role);
+}
+
+if (data.user) {
+  localStorage.setItem("user", JSON.stringify(data.user));
+}
+
+
+      const confirmationData = {
+        ...selection,
+        patientName: name,
+        patientEmail: email,
+        patientPhone: phone,
+        patientRut: rut,
+      };
+      localStorage.setItem("confirmationData", JSON.stringify(confirmationData));
 
       // d) Mensaje de confirmación de reserva 🎉
       const horaBonita =
@@ -1021,8 +1040,8 @@ function initPatientDataPage() {
         `Hora: ${horaBonita} hrs`
       );
 
-      // e) Redirigir donde quieras
-      window.location.href = "historial.html";
+      // e) Redirigir a la confirmación con el resumen
+      window.location.href = "confirmacion.html";
     });
   }
 }
@@ -1209,7 +1228,14 @@ function initConfirmacionPage() {
   const professionalEl = document.querySelector("[data-confirmation-professional]");
   const modalityEl = document.querySelector("[data-confirmation-modality]");
 
-  const pending = safeParseJSON(localStorage.getItem("pendingBooking"), null);
+  const patientEl = document.querySelector("[data-confirmation-patient]");
+  const emailEl = document.querySelector("[data-confirmation-email]");
+  const phoneEl = document.querySelector("[data-confirmation-phone]");
+  const rutEl = document.querySelector("[data-confirmation-rut]");
+
+  const pending =
+    safeParseJSON(localStorage.getItem("confirmationData"), null) ||
+    safeParseJSON(localStorage.getItem("pendingBooking"), null);
   if (!pending) return;
 
   const start = pending.startTime || pending.start_time;
@@ -1218,6 +1244,10 @@ function initConfirmacionPage() {
   if (timeEl && start) timeEl.textContent = `${String(start).slice(0, 5)} hrs`;
   if (professionalEl && pending.kinesiologistName) professionalEl.textContent = pending.kinesiologistName;
   if (modalityEl) modalityEl.textContent = pending.modality || "Presencial";
+  if (patientEl && pending.patientName) patientEl.textContent = pending.patientName;
+  if (emailEl && pending.patientEmail) emailEl.textContent = pending.patientEmail;
+  if (phoneEl && pending.patientPhone) phoneEl.textContent = pending.patientPhone;
+  if (rutEl && pending.patientRut) rutEl.textContent = pending.patientRut;
 }
 
 async function initKinePanelView() {
