@@ -772,7 +772,11 @@ function initLoginSystem() {
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // Redirigir al perfil / historial
-      window.location.href = "historial.html";
+      if (data.user?.role === "kinesiologist" || data.user?.is_kinesiologist === true) {
+  window.location.href = "panelkine.html";
+} else {
+  window.location.href = "historial.html";
+}
     } catch (err) {
       console.error("Error al iniciar sesión:", err);
       alert("Ocurrió un error al iniciar sesión. Intenta de nuevo.");
@@ -1159,31 +1163,31 @@ function initHistoryViews() {
 
   if (!content || !links.length) return;
 
- async function loadView(view) {
-  content.innerHTML = "<p>Cargando...</p>";
+  async function loadView(view) {
+    content.innerHTML = "<p>Cargando...</p>";
 
-  try {
-    const res = await fetch(`./${view}.html`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    try {
+      const res = await fetch(`./${view}.html`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    const html = await res.text();
-    content.innerHTML = html;
+      const html = await res.text();
+      content.innerHTML = html;
 
-     if (view === "historialpaciente") {
-      loadPatientHistory();
-    } else if (view === "perfilpaciente") {
-      initProfileView();
-    } else if (view === "panelkine") {
-      initKinePanelView();
+      if (view === "historialpaciente") {
+        loadPatientHistory();
+      } else if (view === "perfilpaciente") {
+        initProfileView();
+      } else if (view === "panelkine") {
+        initKinePanelView();
+      }
+
+    } catch (e) {
+      console.error(e);
+      content.innerHTML = "<p>Error al cargar la vista.</p>";
     }
-
-  } catch (e) {
-    console.error(e);
-    content.innerHTML = "<p>Error al cargar la vista.</p>";
   }
-}
 
-
+  // ✅ SOLO 1 vez (tú lo tenías duplicado)
   links.forEach(link => {
     link.addEventListener("click", () => {
       links.forEach(l => l.classList.remove("is-active"));
@@ -1192,9 +1196,11 @@ function initHistoryViews() {
     });
   });
 
-
-  loadView("historialpaciente");
+  // Carga inicial por hash o default
+  const target = (location.hash || "#historialpaciente").replace("#", "");
+  loadView(target);
 }
+
 
 
 
@@ -1211,15 +1217,16 @@ async function loadPatientHistory() {
   try {
     const res = await fetch(`${BASE_URL}api/scheduling/patient/history/`, {
       headers: {
-      "Authorization": `Token ${token}`,
-      "ngrok-skip-browser-warning": "true",
-  },
-});
-    if (!res.ok) throw new Error("Error al cargar historial");
+        "Authorization": `Token ${token}`,
+        "ngrok-skip-browser-warning": "true",
+      },
+    });
+
+    if (!res.ok) throw new Error(`Error al cargar historial (HTTP ${res.status})`);
 
     const data = await res.json();
 
-    if (data.length === 0) {
+    if (!Array.isArray(data) || data.length === 0) {
       container.innerHTML = "<p>No tienes tratamientos registrados.</p>";
       return;
     }
@@ -1251,6 +1258,7 @@ async function loadPatientHistory() {
     container.innerHTML = "<p>Error al cargar el historial.</p>";
   }
 }
+
 
 async function initKinePanelView() {
   const token = localStorage.getItem("authToken");
@@ -1638,167 +1646,14 @@ function authHeadersJson() {
     "Authorization": `Token ${token}`,
   });
 }
-
-async function initKinePanelPage() {
-  const page = document.body?.dataset?.page;
-  if (page !== "kine-panel") return;
-
-  const token = getAuthToken();
-  if (!token) {
-    window.location.href = "ingreseAqui.html";
-    return;
-  }
-
-  const listEl = document.querySelector("[data-kine-upcoming]");
-  const detailEl = document.querySelector("[data-kine-detail]");
-  const msgEl = document.querySelector("[data-kine-msg]");
-
-  const selectedIdEl = document.querySelector("[data-kine-selected-id]");
-  const selectedPatientEl = document.querySelector("[data-kine-selected-patient]");
-  const selectedWhenEl = document.querySelector("[data-kine-selected-when]");
-  const selectedStatusEl = document.querySelector("[data-kine-selected-status]");
-
-  const btnConfirm = document.querySelector("[data-kine-confirm]");
-  const btnCancel = document.querySelector("[data-kine-cancel]");
-  const txtComment = document.querySelector("[data-kine-comment]");
-  const btnSaveComment = document.querySelector("[data-kine-save-comment]");
-
-  if (!listEl || !detailEl) {
-    console.warn("Faltan elementos del panel del kinesiólogo en el HTML");
-    return;
-  }
-
-  let selected = null;
-
-  function setMsg(text = "") {
-    if (msgEl) msgEl.textContent = text;
-  }
-
-  function setSelected(appt) {
-    selected = appt;
-    detailEl.hidden = !appt;
-
-    if (!appt) return;
-
-    if (selectedIdEl) selectedIdEl.textContent = appt.appointment_id;
-    if (selectedPatientEl) selectedPatientEl.textContent = appt.patient_name;
-    if (selectedWhenEl) selectedWhenEl.textContent = `${appt.date} • ${String(appt.start_time).slice(0,5)}-${String(appt.end_time).slice(0,5)}`;
-    if (selectedStatusEl) selectedStatusEl.textContent = appt.status_label || appt.status;
-
-    if (btnConfirm) btnConfirm.disabled = false;
-    if (btnCancel) btnCancel.disabled = false;
-    if (btnSaveComment) btnSaveComment.disabled = false;
-    if (txtComment) txtComment.value = "";
-    setMsg("");
-  }
-
-  function renderList(items) {
-    if (!items || items.length === 0) {
-      listEl.innerHTML = `<div class="card"><p>No hay próximas consultas.</p></div>`;
-      return;
-    }
-
-    listEl.innerHTML = "";
-    items.forEach((a) => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <div class="row">
-          <div style="flex:1">
-            <b>${a.patient_name}</b> <span class="badge">${a.status_label}</span>
-            <div class="muted">${a.date} • ${String(a.start_time).slice(0,5)}-${String(a.end_time).slice(0,5)}</div>
-            <div class="muted">ID cita: ${a.appointment_id}</div>
-          </div>
-          <button type="button" class="button">Seleccionar</button>
-        </div>
-      `;
-
-      card.querySelector("button").addEventListener("click", () => setSelected(a));
-      listEl.appendChild(card);
-    });
-  }
-
-  async function loadUpcoming() {
-    listEl.innerHTML = `<div class="card"><p>Cargando...</p></div>`;
-    setSelected(null);
-    try {
-      const res = await fetch(`${BASE_URL}api/kinesiologist/appointments/upcoming/`, {
-        headers: authHeadersJson(),
-      });
-      if (!res.ok) {
-        const t = await res.text();
-        throw new Error(`No se pudo cargar: ${res.status} ${t}`);
-      }
-      const data = await res.json();
-      renderList(data.appointments || []);
-    } catch (e) {
-      console.error(e);
-      listEl.innerHTML = `<div class="card"><p>Error cargando citas.</p></div>`;
-      setMsg(e.message || "Error");
-    }
-  }
-
-  async function updateStatus(newStatus) {
-    if (!selected) return;
-    try {
-      setMsg("Actualizando estado...");
-      const res = await fetch(`${BASE_URL}api/appointments/${selected.appointment_id}/status/`, {
-        method: "PATCH",
-        headers: authHeadersJson(),
-        body: JSON.stringify({ status: newStatus }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.detail || data.message || `HTTP ${res.status}`);
-      setMsg(data.message || "OK");
-      await loadUpcoming();
-    } catch (e) {
-      setMsg(e.message || "Error");
-    }
-  }
-
-  async function saveComment() {
-    if (!selected) return;
-    const comment = (txtComment?.value || "").trim();
-    if (!comment) {
-      setMsg("Escribe un comentario primero.");
-      return;
-    }
-
-    try {
-      setMsg("Guardando comentario...");
-      const res = await fetch(`${BASE_URL}api/appointments/${selected.appointment_id}/comment/`, {
-        method: "PATCH",
-        headers: authHeadersJson(),
-        body: JSON.stringify({ kine_comment: comment }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.detail || data.message || `HTTP ${res.status}`);
-      setMsg(data.message || "Comentario guardado");
-      await loadUpcoming();
-    } catch (e) {
-      setMsg(e.message || "Error");
-    }
-  }
-
-  btnConfirm?.addEventListener("click", () => updateStatus("confirmed"));
-  btnCancel?.addEventListener("click", () => updateStatus("cancelled"));
-  btnSaveComment?.addEventListener("click", () => saveComment());
-
-  // Boot del panel
-  await loadUpcoming();
-}
-
 /****************************************************
  * Boot
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   updateAuthUI();
 
-  // Páginas
   initKineDirectory();
   initSchedulePage();
-
-  // Otras páginas existentes
   initLoginSystem();
   initPatientDataPage();
   initRegisterSystem();
@@ -1806,7 +1661,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initHistoryViews();
   initProfilePage();
   loadPatientProfile();
+  initKinePanelView(); 
 
-  initKinePanelPage();
-
+  // ✅ Panel Kine como página independiente
+  if (document.body?.dataset?.page === "panelkine") {
+    initKinePanelView();
+  }
 });
