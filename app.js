@@ -167,6 +167,28 @@ function isUserLoggedIn() {
   return !!token && !!rawUser;
 }
 
+
+function getStoredUser() {
+  const raw = localStorage.getItem("user");
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch { return null; }
+}
+
+function isKineUser(user) {
+  if (!user) return false;
+  const roleRaw =
+    (user.role ?? user.type ?? user.user_type ?? user.userType ?? "").toString().toLowerCase();
+  const groups = Array.isArray(user.groups) ? user.groups.map(g => String(g).toLowerCase()) : [];
+  return (
+    user.is_kinesiologist === true ||
+    user.isKinesiologist === true ||
+    user.isKine === true ||
+    roleRaw.includes("kine") ||
+    roleRaw.includes("kinesio") ||
+    groups.some(g => g.includes("kine") || g.includes("kinesio"))
+  );
+}
+
 function updateAuthUI() {
   const loginLink = document.querySelector("[data-auth-link]");
   const labelSpan = document.querySelector("[data-auth-label]");
@@ -756,27 +778,37 @@ function initLoginSystem() {
         body: JSON.stringify({ email, password }),
       });
 
-    
       if (!response.ok) {
         console.error("Login HTTP error:", response.status);
         alert("Credenciales incorrectas.");
         return;
       }
 
-      const data = await response.json(); // aquí ya es seguro
+      const data = await response.json();
 
-      console.log("Usuario logeado, podrías ir al siguiente paso", data);
-
-      // Guardar sesión
+      // ✅ Guardar sesión
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Redirigir al perfil / historial
-      if (data.user?.role === "kinesiologist" || data.user?.is_kinesiologist === true) {
-  window.location.href = "panelkine.html";
-} else {
-  window.location.href = "historial.html";
-}
+      // ✅ Detectar si es kinesiólogo por permiso REAL (probando el endpoint)
+      try {
+        const probe = await fetch(`${BASE_URL}api/kinesiologist/appointments/upcoming/`, {
+          headers: {
+            "Authorization": `Token ${data.token}`,
+            "ngrok-skip-browser-warning": "true",
+          }
+        });
+
+        if (probe.status === 200) {
+          window.location.href = "panelkine.html";
+        } else {
+          window.location.href = "historial.html";
+        }
+      } catch (e) {
+        // si falla por red o algo raro, cae a historial
+        window.location.href = "historial.html";
+      }
+
     } catch (err) {
       console.error("Error al iniciar sesión:", err);
       alert("Ocurrió un error al iniciar sesión. Intenta de nuevo.");
@@ -995,101 +1027,6 @@ function initPatientDataPage() {
   }
 }
 
-async function initRegisterSystem() {
-  const registerBtn = document.querySelector("[data-patient-submit]");
-  if (!registerBtn) {
-    // No estamos en datos.html, salir sin error
-    return;
-  }
-
-  console.log("initRegisterSystem listo en datos.html ✅");
-
-  registerBtn.addEventListener("click", async () => {
-    console.log("CLICK en CONFIRMAR HORARIO");
-
-    // 1) Verificamos que haya un horario pendiente
-    const rawSelection = localStorage.getItem("pendingBooking");
-    if (!rawSelection) {
-      alert("Primero selecciona un horario en la pantalla anterior.");
-      return;
-    }
-
-    let selection;
-    try {
-      selection = JSON.parse(rawSelection);
-    } catch (e) {
-      console.error("Error parseando pendingBooking:", e);
-      alert("Ocurrió un problema con la hora seleccionada. Vuelve a escogerla.");
-      return;
-    }
-
-    // 2) Datos del formulario
-    const rut = document.querySelector("[data-patient-rut]").value.trim();
-    const name = document.querySelector("[data-patient-fullname]").value.trim();
-    const email = document.querySelector("[data-patient-email]").value.trim();
-    const phone = document.querySelector("[data-patient-phone]").value.trim();
-    const password = document
-      .querySelector("[data-patient-password]")
-      .value.trim();
-    const confirm = document
-      .querySelector("[data-patient-password-confirm]")
-      .value.trim();
-
-    if (!rut || !name || !email || !phone || !password || !confirm) {
-      alert("Por favor completa todos los campos.");
-      return;
-    }
-
-    if (password !== confirm) {
-      alert("Las contraseñas no coinciden.");
-      return;
-    }
-
-    // 3) Llamada al backend para crear el paciente
-    // 🔁 Ajusta la URL si tu endpoint cambió (aquí uso /api/register)
-    let response;
-    try {
-      response = await fetch(BASE_URL + "api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-        body: JSON.stringify({
-          rut,
-          name,
-          email,
-          phone_number: phone,
-          password,
-        }),
-      });
-    } catch (err) {
-      console.error("Error de red:", err);
-      alert("No se pudo contactar con el servidor. Intenta nuevamente.");
-      return;
-    }
-
-    if (!response.ok) {
-      const txt = await response.text();
-      console.error("Error backend registro:", response.status, txt);
-      alert("Error al crear la cuenta. Revisa la consola para más detalles.");
-      return;
-    }
-
-    // 4) Si llegó hasta aquí, mostramos el MENSAJE DE CONFIRMACIÓN 🎉
-    const horaBonita = (selection.startTime || selection.start_time || "")
-      .slice(0, 5);
-    alert(
-      `¡Reserva creada con éxito!\n\n` +
-        `Paciente: ${name}\n` +
-        `Fecha: ${selection.date}\n` +
-        `Hora: ${horaBonita} hrs`
-    );
-
-    // Opcional: puedes redirigir al historial o al login
-    window.location.href = "historial.html";
-  });
-}
 
 function initPatientHistoryPage() {
   const page = document.body.dataset.page;
@@ -1263,6 +1200,15 @@ async function loadPatientHistory() {
 async function initKinePanelView() {
   const token = localStorage.getItem("authToken");
   if (!token) return;
+
+  const user = getStoredUser();
+  if (!isKineUser(user)) {
+    const listElGuard = document.querySelector("[data-kine-upcoming]");
+    if (listElGuard) {
+      listElGuard.innerHTML = `<div class="kine__empty">Acceso denegado. Esta sección es solo para kinesiólogos.</div>`;
+    }
+    return;
+  }
 
   const listEl = document.querySelector("[data-kine-upcoming]");
   const countEl = document.querySelector("[data-kine-count]");
@@ -1656,12 +1602,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initSchedulePage();
   initLoginSystem();
   initPatientDataPage();
-  initRegisterSystem();
   initPatientHistoryPage();
   initHistoryViews();
   initProfilePage();
   loadPatientProfile();
-  initKinePanelView(); 
 
   // ✅ Panel Kine como página independiente
   if (document.body?.dataset?.page === "panelkine") {
