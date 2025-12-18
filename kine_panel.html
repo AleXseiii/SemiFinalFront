@@ -1,126 +1,264 @@
-<section class="kine">
-  <header class="kine__header">
-    <div>
-      <h1 class="kine__title">Mis próximas consultas</h1>
-      <p class="kine__subtitle">Listado de pacientes agendados para los próximos días.</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel del Kinesiólogo | Centro de Salud y Bienestar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: radial-gradient(circle at 20% 20%, rgba(54, 199, 146, 0.15), transparent 35%),
+            radial-gradient(circle at 80% 0%, rgba(30, 120, 90, 0.25), transparent 30%),
+            linear-gradient(145deg, #0d1f1a 0%, #092016 35%, #0e2b20 75%, #0b1914 100%);
+      --glass: rgba(255, 255, 255, 0.04);
+      --stroke: rgba(255, 255, 255, 0.08);
+      --soft: rgba(255, 255, 255, 0.12);
+      --text: #e8f3ec;
+      --muted: #8ba9a0;
+      --accent: #36c792;
+      --accent-2: #1f8a64;
+      --danger: #e95f5f;
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 22px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(135deg, rgba(15, 42, 33, 0.7), rgba(13, 54, 41, 0.35));
+      border-bottom: 1px solid var(--stroke);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand__logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #1f8a64, #36c792);
+      box-shadow: 0 10px 25px rgba(54, 199, 146, 0.4);
+    }
+
+    .brand__text { margin: 0; font-weight: 700; letter-spacing: 0.4px; }
+
+    .nav { display: flex; gap: 18px; color: var(--muted); font-size: 14px; }
+
+    main {
+      flex: 1;
+      padding: 28px 32px 40px;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .hero {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .hero__title { margin: 0 0 6px; font-size: 26px; font-weight: 700; letter-spacing: 0.2px; }
+    .hero__subtitle { margin: 0; color: var(--muted); }
+
+    .glass-btn {
+      border: 1px solid var(--stroke);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+    .glass-btn:hover { transform: translateY(-1px); border-color: rgba(54, 199, 146, 0.6); box-shadow: 0 16px 30px rgba(54, 199, 146, 0.16); }
+    .glass-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .glass-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      border: 1px solid var(--stroke);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+    }
+
+    .card__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .card__title { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: 0.2px; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(54, 199, 146, 0.12);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 12px;
+      letter-spacing: 0.2px;
+    }
+
+    .list { display: flex; flex-direction: column; gap: 12px; }
+    .placeholder { padding: 14px; border-radius: 14px; border: 1px dashed var(--stroke); text-align: center; color: var(--muted); }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .kv { padding: 12px; border-radius: 14px; border: 1px solid var(--stroke); background: rgba(255, 255, 255, 0.03); }
+    .kv__k { display: block; color: var(--muted); font-size: 12px; letter-spacing: 0.2px; }
+    .kv__v { display: block; margin-top: 6px; font-weight: 700; }
+
+    .detail { display: flex; flex-direction: column; gap: 6px; }
+
+    .actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+    .btn-primary { background: linear-gradient(135deg, rgba(54, 199, 146, 0.9), rgba(31, 138, 100, 0.9)); border-color: rgba(54, 199, 146, 0.7); color: #0c1c16; }
+    .btn-danger { background: linear-gradient(135deg, rgba(233, 95, 95, 0.9), rgba(179, 48, 48, 0.9)); border-color: rgba(233, 95, 95, 0.7); color: #200909; }
+
+    .divider { height: 1px; width: 100%; background: var(--stroke); margin: 14px 0; }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      padding: 12px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      resize: vertical;
+    }
+    textarea:focus { border-color: rgba(54, 199, 146, 0.65); box-shadow: 0 10px 25px rgba(54, 199, 146, 0.16); }
+
+    .note { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .msg { font-size: 13px; color: var(--muted); min-height: 18px; }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand__logo" aria-hidden="true"></div>
+      <div>
+        <p class="brand__text">Centro de Salud y Bienestar</p>
+        <small style="color: var(--muted);">Panel del Kinesiólogo</small>
+      </div>
     </div>
-    <button class="kine__btn" type="button" data-kine-refresh>
-      Actualizar
-    </button>
+    <nav class="nav" aria-label="Menú principal">
+      <span>Inicio</span>
+      <span>Pacientes</span>
+      <span>Agenda</span>
+    </nav>
   </header>
-
-  <div class="kine__grid">
-    <!-- Columna izquierda: lista -->
-    <section class="kine__card">
-      <div class="kine__cardHead">
-        <h2 class="kine__h2">Agenda próxima</h2>
-        <span class="kine__pill" data-kine-count>0</span>
+    <main>
+    <div class="hero">
+      <div>
+        <h1 class="hero__title">Mis próximas consultas</h1>
+        <p class="hero__subtitle">Organiza tu agenda y gestiona el detalle de cada sesión en un entorno seguro.</p>
       </div>
-
-      <div class="kine__list" data-kine-upcoming>
-        <div class="kine__empty">Cargando...</div>
-      </div>
-    </section>
-
-    <!-- Columna derecha: detalle -->
-    <section class="kine__card">
-      <div class="kine__cardHead">
-        <h2 class="kine__h2">Detalle de la consulta</h2>
-        <span class="kine__badge" data-kine-status>-</span>
-      </div>
-
-      <div class="kine__detail" data-kine-detail hidden>
-        <div class="kine__detailRow">
-          <div class="kine__kv">
-            <span class="kine__k">Paciente</span>
-            <span class="kine__v" data-kine-patient>-</span>
+      <button class="glass-btn" type="button" data-kine-refresh>Actualizar</button>
+    </div>
+    <div class="layout">
+      <section class="card" aria-labelledby="upcoming-title">
+        <div class="card__head">
+          <h2 class="card__title" id="upcoming-title">Agenda próxima</h2>
+          <span class="pill" data-kine-count>0</span>
+        </div>
+        <div class="list" data-kine-upcoming>
+          <div class="placeholder">Cargando…</div>
+        </div>
+      </section>
+      <section class="card" aria-labelledby="detail-title">
+        <div class="card__head">
+          <h2 class="card__title" id="detail-title">Detalle de la consulta</h2>
+          <span class="badge" data-kine-status>-</span>
+        </div>
+        <div class="detail" data-kine-detail hidden>
+          <div class="detail-grid">
+            <div class="kv">
+              <span class="kv__k">Paciente</span>
+              <span class="kv__v" data-kine-patient>-</span>
+            </div>
+            <div class="kv">
+              <span class="kv__k">Fecha y hora</span>
+              <span class="kv__v" data-kine-when>-</span>
+            </div>
           </div>
-          <div class="kine__kv">
-            <span class="kine__k">Fecha y hora</span>
-            <span class="kine__v" data-kine-when>-</span>
+          <div class="divider" aria-hidden="true"></div>
+
+          <div class="actions">
+            <button class="glass-btn btn-primary" type="button" data-kine-confirm disabled>Confirmar</button>
+            <button class="glass-btn btn-danger" type="button" data-kine-cancel disabled>Cancelar</button>
+          </div>
+          <div class="divider" aria-hidden="true"></div>
+          <h3 class="card__title" style="font-size: 15px; margin-bottom: 6px;">Comentario de sesión</h3>
+          <p class="note">Al guardar un comentario, la sesión se marcará como <strong>realizada</strong> y el paciente lo verá reflejado en su historial.</p>
+          <label for="comentario" class="visually-hidden">Comentario de sesión</label>
+          <textarea id="comentario" data-kine-comment placeholder="Escribe el avance del paciente…"></textarea>
+          <div class="actions" style="margin-top: 10px;">
+            <button class="glass-btn" type="button" data-kine-save-comment disabled>Guardar comentario (marca realizada)</button>
+            <span class="msg" data-kine-msg></span>
           </div>
         </div>
-
-        <div class="kine__actions">
-          <button class="kine__btn kine__btn--ok" type="button" data-kine-confirm disabled>
-            Confirmar
-          </button>
-          <button class="kine__btn kine__btn--danger" type="button" data-kine-cancel disabled>
-            Cancelar
-          </button>
+        <div class="placeholder" data-kine-detail-empty>
+          Selecciona una consulta para ver el detalle.
         </div>
-
-        <div class="kine__divider"></div>
-
-        <h3 class="kine__h3">Comentario de sesión</h3>
-        <p class="kine__help">
-          Al guardar un comentario, la sesión se marcará como <b>realizada</b> y el paciente lo verá reflejado en su historial.
-        </p>
-
-        <textarea class="kine__textarea" data-kine-comment placeholder="Escribe el avance del paciente..."></textarea>
-
-        <div class="kine__actions">
-          <button class="kine__btn" type="button" data-kine-save-comment disabled>
-            Guardar comentario (marca realizada)
-          </button>
-          <span class="kine__msg" data-kine-msg></span>
-        </div>
-      </div>
-
-      <div class="kine__empty" data-kine-detail-empty>
-        Selecciona una consulta de la lista para ver el detalle.
-      </div>
-    </section>
-  </div>
-</section>
-
-<style>
-  /* Estilo moderno coherente con tu sitio (Poppins) */
-  .kine { font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-  .kine__header { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:14px; }
-  .kine__title { margin:0; font-size:22px; font-weight:600; }
-  .kine__subtitle { margin:6px 0 0; color:#8b8f9a; font-size:13px; }
-
-  .kine__grid { display:grid; grid-template-columns: 1.1fr 0.9fr; gap:14px; }
-  @media (max-width: 900px){ .kine__grid { grid-template-columns: 1fr; } }
-
-  .kine__card { background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10); border-radius:14px; padding:14px; }
-  .kine__cardHead { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-  .kine__h2 { margin:0; font-size:15px; font-weight:600; }
-  .kine__h3 { margin:0 0 6px; font-size:14px; font-weight:600; }
-  .kine__help { margin:0 0 10px; color:#8b8f9a; font-size:12.5px; line-height:1.35; }
-
-  .kine__pill { display:inline-flex; align-items:center; justify-content:center; min-width:28px; height:22px; padding:0 8px;
-    border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,0.18); color:#eaeaf0; }
-  .kine__badge { font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.18); color:#eaeaf0; }
-
-  .kine__list { display:flex; flex-direction:column; gap:10px; }
-  .kine__item { display:flex; align-items:center; justify-content:space-between; gap:10px;
-    padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.10); background: rgba(0,0,0,0.12); }
-  .kine__item:hover { border-color: rgba(255,255,255,0.22); }
-  .kine__meta { display:flex; flex-direction:column; gap:4px; }
-  .kine__name { font-weight:600; font-size:14px; margin:0; }
-  .kine__when { font-size:12px; color:#8b8f9a; margin:0; }
-  .kine__tag { font-size:12px; border:1px solid rgba(255,255,255,0.18); border-radius:999px; padding:3px 10px; color:#eaeaf0; }
-
-  .kine__btn { border:none; border-radius:10px; padding:10px 12px; cursor:pointer;
-    background: rgba(255,255,255,0.10); color:#fff; font-weight:600; }
-  .kine__btn:disabled { opacity:0.5; cursor:not-allowed; }
-  .kine__btn--ok { background: rgba(46, 204, 113, 0.20); border:1px solid rgba(46, 204, 113, 0.35); }
-  .kine__btn--danger { background: rgba(231, 76, 60, 0.20); border:1px solid rgba(231, 76, 60, 0.35); }
-
-  .kine__detailRow { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px; }
-  @media (max-width: 520px){ .kine__detailRow { grid-template-columns: 1fr; } }
-
-  .kine__kv { background: rgba(0,0,0,0.12); border:1px solid rgba(255,255,255,0.10); border-radius:12px; padding:10px; }
-  .kine__k { display:block; color:#8b8f9a; font-size:12px; }
-  .kine__v { display:block; font-weight:600; margin-top:4px; }
-
-  .kine__actions { display:flex; gap:10px; align-items:center; }
-  .kine__divider { height:1px; background: rgba(255,255,255,0.12); margin:12px 0; }
-
-  .kine__textarea { width:100%; min-height:110px; border-radius:12px; padding:10px 12px;
-    border:1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.12); color:#fff; outline:none; resize:vertical; }
-  .kine__msg { font-size:12px; color:#8b8f9a; }
-  .kine__empty { padding:14px; border-radius:12px; border:1px dashed rgba(255,255,255,0.18); color:#8b8f9a; text-align:center; }
-</style>
+        </section>
+    </div>
+  </main>
+  
