@@ -1,0 +1,37 @@
+
+<section class="profile-card">
+  <header class="profile-card__header">
+    <h2>Datos personales</h2>
+    <button id="editProfileBtn" class="btn-secondary">Editar datos</button>
+  </header>
+
+  <div id="profileView">
+    <p><strong>Nombre:</strong> <span data-profile-name></span></p>
+    <p><strong>RUT:</strong> <span data-profile-rut></span></p>
+    <p><strong>Correo:</strong> <span data-profile-email></span></p>
+    <p><strong>Teléfono:</strong> <span data-profile-phone></span></p>
+  </div>
+
+  <form id="profileForm" hidden>
+    <div class="form-group">
+      <label>Nombre completo</label>
+      <input type="text" id="profileName" />
+    </div>
+
+    <div class="form-group">
+      <label>Correo electrónico</label>
+      <input type="email" id="profileEmail" />
+    </div>
+
+    <div class="form-group">
+      <label>Teléfono</label>
+      <input type="text" id="profilePhone" />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Guardar cambios</button>
+      <button type="button" id="cancelEditBtn" class="btn-secondary">Cancelar</button>
+    </div>
+  </form>
+</section>
+

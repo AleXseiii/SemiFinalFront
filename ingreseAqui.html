@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centro de salud y Bienestar - Acceso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./home.css" />
+</head>
+<body data-page="ingresar">
+  <div class="layout">
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand__logo"></div>
+        <div class="brand__text">
+          <span>Centro de salud y</span>
+          <span class="brand__text--bold">Bienestar</span>
+        </div>
+      </div>
+      <nav class="site-nav">
+  <a data-nav-target="home" href="./home.html#inicio">Inicio</a>
+  <a data-nav-target="valores" href="./valores.html">Valores</a>
+  <a data-nav-target="quienes" href="./quienes.html">¿Quiénes somos?</a>
+  <a data-nav-target="agendar" href="./agendar.html">Agendar hora</a>
+  <a data-nav-target="ingresar" href="./ingreseAqui.html" data-auth-link>
+    <span data-auth-label>Ingresar</span>
+    <span class="site-nav__user" data-auth-user>Invitado</span>
+  </a>
+</nav>
+    </header>
+
+    <main class="identity-access">
+  <section class="identity-card" aria-labelledby="identity-title">
+    <div class="identity-card__badge">Ingresar</div>
+    <h1 id="identity-title">Accede a tu cuenta</h1>
+    <p class="identity-card__lead">
+      Usa el correo registrado y la contraseña que creaste para continuar.
+    </p>
+
+    <!-- AQUÍ va el NUEVO form -->
+    <form id="loginForm" class="identity-form" autocomplete="on">
+      <div class="identity-field">
+        <span>Correo electrónico</span>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="ejemplo@correo.cl"
+          required
+        />
+      </div>
+
+      <div class="identity-field">
+        <span>Contraseña</span>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Ingresa tu contraseña"
+          required
+        />
+      </div>
+
+      <button type="submit" class="button button--full">
+        Ingresar
+      </button>
+
+      <p id="login-error" style="color: #ffb3b3; font-size: 13px;"></p>
+    </form>
+  </section>
+</main>
+  </div>
+
+     <!-- Define la URL base de la API antes del script principal. -->
+ <script src="./api.js" type="module"></script>
+<script src="./request.js" type="module"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centro de salud y Bienestar - Agendar hora</title>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="home.css" />
+</head>
+
+<body data-page="agendar">
+  <div class="layout">
+    <!-- HEADER -->
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand__logo">
+          <!-- Logo aquí si quieres -->
+          <!-- <img src="./img/logo.svg" alt="Centro de salud y Bienestar" /> -->
+        </div>
+        <div class="brand__text">
+          <span>Centro de salud y</span>
+          <span class="brand__text--bold">Bienestar</span>
+        </div>
+      </div>
+
+  <nav class="site-nav">
+  <a data-nav-target="home" href="./home.html#inicio">Inicio</a>
+  <a data-nav-target="valores" href="./valores.html">Valores</a>
+  <a data-nav-target="quienes" href="./quienes.html">¿Quiénes somos?</a>
+  <a data-nav-target="agendar" href="./agendar.html">Agendar hora</a>
+  <a data-nav-target="ingresar" href="./ingreseAqui.html" data-auth-link>
+    <span data-auth-label>Ingresar</span>
+    <span class="site-nav__user" data-auth-user>Invitado</span>
+  </a>
+</nav>
+    </header>
+    <!-- ========= DIRECTORIO DE KINESIÓLOGOS + SERVICIOS + HORARIOS ========= -->
+    <section class="kine-directory" data-kine-directory>
+      <div class="kine-directory__header">
+        <div>
+          <p class="kine-directory__eyebrow">Agenda online</p>
+          <h2>Explora el equipo y agenda sin esperar</h2>
+          <p class="kine-directory__hint">Toda la información proviene de la misma fuente segura que utilizas en la clínica.</p>
+        </div>
+        <div class="kine-directory__pill">Horarios actualizados en tiempo real</div>
+      </div>
+      <aside class="kine-directory__sidebar">
+        <div class="kine-directory__sidebar-head">
+          <p class="kine-directory__eyebrow">Equipo</p>
+          <h3>Kinesiología</h3>
+          <p class="kine-directory__hint">
+            Selecciona un profesional para ver su perfil, tratamientos y horarios.
+          </p>
+        </div>
+        <!-- Lista de kines cargada por JS -->
+        <div class="kine-directory__list" data-kine-list aria-live="polite">
+          <div class="kine-directory__placeholder">
+            <span class="kine-directory__spinner" aria-hidden="true"></span>
+            <div>
+              <p>Cargando equipo en tiempo real…</p>
+              <small>Conectando con el backend para obtener la agenda.</small>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <article class="kine-directory__detail" data-kine-detail aria-live="polite">
+        <!-- Estado vacío -->
+        <div class="kine-directory__empty" data-kine-empty>
+          <p>Selecciona un profesional para ver su información y sus horarios.</p>
+        </div>
+         <!-- Perfil + servicios + horarios -->
+        <div class="kine-directory__profile" data-kine-profile hidden>
+          <header class="kine-directory__profile-head">
+            <div class="kine-directory__avatar" data-kine-avatar aria-hidden="true"></div>
+            <div>
+              <p class="kine-directory__role" data-kine-specialty></p>
+              <h2 data-kine-name></h2>
+              <div class="kine-directory__tags">
+                <span data-kine-box></span>
+                <span data-kine-rut></span>
+              </div>
+            </div>
+          </header>
+
+          <section class="kine-directory__bio">
+            <h3>Sobre mí</h3>
+            <p data-kine-description></p>
+          </section>
+
+          <section class="kine-directory__cards">
+            <div class="kine-card">
+              <p class="kine-card__label">Teléfono</p>
+              <p class="kine-card__value" data-kine-phone></p>
+              <a class="kine-card__action" data-kine-phone-link>Contactar</a>
+            </div>
+            <div class="kine-card">
+              <p class="kine-card__label">Correo</p>
+              <p class="kine-card__value" data-kine-email></p>
+              <a class="kine-card__action" data-kine-email-link>Enviar correo</a>
+            </div>
+          </section>
+          <!-- Tratamientos -->
+          <section class="kine-services" aria-label="Selecciona un servicio" data-kine-services>
+          </section>
+          <!-- Horarios -->
+          <section class="kine-directory__slots" data-kine-slots>
+            <p class="kine-directory__slots-empty">
+              Selecciona “Ver horarios” en un servicio.
+            </p>
+          </section>
+        </div>
+         </article>
+    </section>
+  </div>
+  <!-- SCRIPTS -->
+  <script src="./api.js" type="module"></script>
+  <script src="./request.js" type="module"></script>
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

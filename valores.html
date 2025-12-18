@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de salud y Bienestar - Valores</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./home.css">
+</head>
+<body data-page="valores">
+    <!-- data-page hace posible que app.js administre funciones específicas de la pestaña de valores. -->
+    <div class="layout">
+        <header class="site-header">
+            <div class="brand">
+                <div class="brand__logo">
+                    <!-- Inserta aquí el logotipo (ej.: <img src="/static/images/logo.png" alt="Logo">) -->
+                </div>
+                <div class="brand__text">
+                    <span>Centro de salud y</span>
+                    <span class="brand__text--bold">Bienestar</span>
+                </div>
+            </div>
+            <nav class="site-nav">
+  <a data-nav-target="home" href="./home.html#inicio">Inicio</a>
+  <a data-nav-target="valores" href="./valores.html">Valores</a>
+  <a data-nav-target="quienes" href="./quienes.html">¿Quiénes somos?</a>
+  <a data-nav-target="agendar" href="./agendar.html">Agendar hora</a>
+  <a data-nav-target="ingresar" href="./ingreseAqui.html" data-auth-link>
+    <span data-auth-label>Ingresar</span>
+    <span class="site-nav__user" data-auth-user>Invitado</span>
+  </a>
+</nav>
+    </header>
+
+        <main class="values">
+            <div class="values__hero">
+                 <div class="values__hero-layer">
+                    <!-- Cambia la imagen del banner desde home.css (.values__hero-layer). -->
+                </div>
+                <div class="values__hero-content">
+                    <span class="values__tag">Servicios</span>
+                    <h2>VALORES</h2>
+                    <p>Sesiones y programas diseñados para tu bienestar integral.</p>
+                </div>
+            </div>
+
+            <div class="values__toolbar">
+                <div class="values__breadcrumbs">Inicio \ Valores</div>
+                <div class="values__controls">
+                    <span class="values__range">Mostrando 6 servicios</span>
+                    <button class="values__sort" type="button">Orden predeterminada</button>
+                </div>
+            </div>
+
+            <div class="values__grid">
+                <article class="value-card">
+                     <div class="value-card__media value-card__media--evaluacion" aria-hidden="true">
+                        <!-- Ajusta la foto editando la URL en home.css (.value-card__media--evaluacion). -->
+                    </div>
+                    <div class="value-card__body">
+                        <header class="value-card__header">
+                            <h3>Evaluación Kinesiológica</h3>
+                            <span>Servicios</span>
+                        </header>
+                        <p class="value-card__price">$25.000</p>
+                                            <a class="value-card__action" href="./agendar.html">Reserva tu hora</a>
+                    </div>
+                </article>
+
+                <article class="value-card">
+                        <div class="value-card__media value-card__media--kine-1" aria-hidden="true">
+                        <!-- Actualiza la foto modificando la URL en home.css (.value-card__media--kine-1). -->
+                          </div>
+                    <div class="value-card__body">
+                        <header class="value-card__header">
+                            <h3>1 sesión de kinesiología</h3>
+                            <span>Servicios</span>
+                        </header>
+                        <p class="value-card__price">$20.000</p>
+                                               <a class="value-card__action" href="./agendar.html">Reserva tu hora</a>
+                </article>
+
+                <article class="value-card">
+                    <div class="value-card__media value-card__media--kine-5" aria-hidden="true">
+                        <!-- Personaliza la foto de este plan en home.css (.value-card__media--kine-5). -->
+                         </div>
+                    <div class="value-card__body">
+                        <header class="value-card__header">
+                            <h3>Plan 5 sesiones kinesiología</h3>
+                            <span>Servicios</span>
+                        </header>
+                        <p class="value-card__price">$90.000</p>
+                        <a class="value-card__action" href="./agendar.html">Reserva tu hora</a>
+                    </div>
+                </article>
+
+                <article class="value-card">
+                    <div class="value-card__media value-card__media--kine-15" aria-hidden="true">
+                        <!-- Cambia la imagen del plan intensivo en home.css (.value-card__media--kine-15). -->
+                    </div>
+                    <div class="value-card__body">
+                        <header class="value-card__header">
+                            <h3>Plan 15 sesiones kinesiología</h3>
+                            <span>Servicios</span>
+                        </header>
+                        <p class="value-card__price">$240.000</p>
+                        <a class="value-card__action" href="./agendar.html">Reserva tu hora</a>
+                    </div>
+                </article>
+
+                <article class="value-card">
+                    <div class="value-card__media value-card__media--fisica" aria-hidden="true">
+                        <!-- Actualiza la foto modificando la URL en home.css (.value-card__media--fisica). -->
+                    </div>
+                    <div class="value-card__body">
+                        <header class="value-card__header">
+                            <h3>Sesión kinesiología física</h3>
+                            <span>Servicios</span>
+                        </header>
+                        <p class="value-card__price">$22.000</p>
+                        <a class="value-card__action" href="./agendar.html">Reserva tu hora</a>
+                    </div>
+                </article>
+
+                <article class="value-card">
+                    <div class="value-card__media value-card__media--ocupacional" aria-hidden="true">
+                         <!-- Actualiza la foto modificando la URL en home.css (.value-card__media--ocupacional). -->
+                    </div>
+                    <div class="value-card__body">
+                        <header class="value-card__header">
+                            <h3>Sesión terapia ocupacional</h3>
+                            <span>Servicios</span>
+                        </header>
+                        <p class="value-card__price">$22.000</p>
+                        <a class="value-card__action" href="./agendar.html">Reserva tu hora</a>
+                    </div>
+                </article>
+            </div>
+            
+        </main>
+    </div>
+    <!-- Define la URL base de la API antes del script principal. -->
+  <script src="./api.js" type="module"></script>
+<script src="./request.js" type="module"></script>
+<script src="./app.js" type="module"></script>
+</body>
+</html>

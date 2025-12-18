@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centro de salud y Bienestar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./home.css" />
+</head>
+<body data-page="home">
+  <!-- data-page se utiliza en app.js para aplicar interacciones específicas a cada pestaña. -->
+  <div class="layout">
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand__logo">
+          <!-- Sustituye este bloque por tu logotipo: <img src="ruta/logo.svg" alt="Nombre de la marca" /> -->
+        </div>
+        <div class="brand__text">
+          <span>Centro de salud y</span>
+          <span class="brand__text--bold">Bienestar</span>
+        </div>
+      </div>
+      <nav class="site-nav">
+  <a data-nav-target="home" href="./home.html#inicio">Inicio</a>
+  <a data-nav-target="valores" href="./valores.html">Valores</a>
+  <a data-nav-target="quienes" href="./quienes.html">¿Quiénes somos?</a>
+  <a data-nav-target="agendar" href="./agendar.html">Agendar hora</a>
+  <a data-nav-target="ingresar" href="./ingreseAqui.html" data-auth-link>
+    <span data-auth-label>Ingresar</span>
+    <span class="site-nav__user" data-auth-user>Invitado</span>
+  </a>
+</nav>
+    </header>
+
+    <main id="inicio" class="hero">
+      <div class="hero__content">
+        <h1>Equilibramos tu cuerpo y bienestar.</h1>
+        <a class="hero__button" href="./agendar.html">Reserva tu hora</a>
+      </div>
+      <div class="hero__media">
+        <!-- Reemplaza la imagen del banner principal modificando la URL en home.css dentro de .hero__media::before -->
+      </div>
+    </main>
+  </div>
+   <!-- Define la URL base de la API antes del script principal. -->
+  <script src="./api.js" type="module"></script>
+<script src="./request.js" type="module"></script>
+<script src="./app.js" type="module"></script>
+</body>
+</html>
