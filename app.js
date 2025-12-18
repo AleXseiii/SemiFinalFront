@@ -191,8 +191,9 @@ function updateAuthUI() {
 
   if (token && rawUser) {
     let name = "Paciente";
+    let user = null;
     try {
-      const user = JSON.parse(rawUser);
+      user = JSON.parse(rawUser);
       name = user.name || user.full_name || user.email || name;
     } catch (e) {
       console.warn("No se pudo parsear user desde localStorage:", e);
@@ -210,7 +211,9 @@ function updateAuthUI() {
       window.location.href = "ingreseAqui.html";
     };
 
-    userLink.href = "historial.html";
+    const userProfileUrl = isKineUser(user) ? "kine_perfil.html" : "historial.html";
+
+    userLink.href = userProfileUrl;
     userLink.onclick = null;
   } else {
     loginLink.textContent = "Ingresar";
