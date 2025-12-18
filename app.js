@@ -175,18 +175,8 @@ function getStoredUser() {
 }
 
 function isKineUser(user) {
-  if (!user) return false;
-  const roleRaw =
-    (user.role ?? user.type ?? user.user_type ?? user.userType ?? "").toString().toLowerCase();
-  const groups = Array.isArray(user.groups) ? user.groups.map(g => String(g).toLowerCase()) : [];
-  return (
-    user.is_kinesiologist === true ||
-    user.isKinesiologist === true ||
-    user.isKine === true ||
-    roleRaw.includes("kine") ||
-    roleRaw.includes("kinesio") ||
-    groups.some(g => g.includes("kine") || g.includes("kinesio"))
-  );
+  const role = localStorage.getItem("role") || user?.role;
+  return role === "kinesiologist" || user?.specialty != null || user?.box != null;
 }
 
 function updateAuthUI() {
@@ -788,7 +778,8 @@ function initLoginSystem() {
 
       // ✅ Guardar sesión
       localStorage.setItem("authToken", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      if (data.role) localStorage.setItem("role", data.role);
+      if (data.user) localStorage.setItem("user", JSON.stringify({ ...data.user, role: data.role || null }));
 
       // ✅ Detectar si es kinesiólogo por permiso REAL (probando el endpoint)
       try {
@@ -1005,7 +996,9 @@ function initPatientDataPage() {
 
       if (data.token) {
         localStorage.setItem("authToken", data.token);
-      }
+      if (data.role) localStorage.setItem("role", data.role);
+      if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+}
       if (data.user) {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
@@ -1592,11 +1585,391 @@ function authHeadersJson() {
     "Authorization": `Token ${token}`,
   });
 }
+
+
+/****************************************************
+ * KINE PERFIL (kine_perfil.html)
+ ****************************************************/
+async function initKineProfilePage() {
+  const page = document.body?.dataset?.page;
+  if (page !== "kine-perfil") return;
+
+  const token = localStorage.getItem("authToken");
+  const user = getStoredUser();
+
+  if (!token) {
+    window.location.href = "ingreseAqui.html";
+    return;
+  }
+
+  // Si el rol no está en localStorage, NO redirigimos: dejamos que el backend responda 403 y mostramos mensaje.
+  if (!isKineUser(user)) {
+    const msgEl = document.querySelector("[data-kine-profile-msg]");
+    if (msgEl) msgEl.textContent = "Acceso restringido (rol no detectado en sesión).";
+  }
+
+  // UI (resumen)
+  const nameEl  = document.querySelector("[data-kine-profile-name]");
+  const emailEl = document.querySelector("[data-kine-profile-email]");
+  const phoneEl = document.querySelector("[data-kine-profile-phone]");
+  const rutEl   = document.querySelector("[data-kine-profile-rut]");
+
+  // UI (form)
+  const form = document.querySelector("[data-kine-profile-form]");
+  const emailInp = document.querySelector("[data-kine-profile-email-input]");
+  const phoneInp = document.querySelector("[data-kine-profile-phone-input]");
+  const passInp  = document.querySelector("[data-kine-profile-pass-input]");
+  const pass2Inp = document.querySelector("[data-kine-profile-pass2-input]");
+  const cancelBtn = document.querySelector("[data-kine-profile-cancel]");
+  const msgEl = document.querySelector("[data-kine-profile-msg]");
+
+  const setMsg = (t = "") => { if (msgEl) msgEl.textContent = t; };
+
+  // ⚠️ Endpoint sugerido (ajústalo si tu backend usa otro)
+  const PROFILE_URL = `${BASE_URL}api/kinesiologist/profile/`;
+
+  async function loadProfile() {
+    setMsg("Cargando perfil...");
+    try {
+      const res = await fetch(PROFILE_URL, {
+        headers: withNgrokHeader({
+          "Authorization": `Token ${token}`,
+        }),
+      });
+
+      if (res.status === 403) {
+        setMsg("Acceso denegado.");
+        return;
+      }
+      if (!res.ok) {
+        setMsg("No se pudo cargar el perfil.");
+        return;
+      }
+
+      const data = await res.json();
+
+      const name  = data.name || data.full_name || user?.name || "—";
+      const email = data.email || user?.email || "—";
+      const phone = data.phone_number || data.phone || user?.phone_number || "—";
+      const rut   = data.rut || user?.rut || "—";
+
+      if (nameEl) nameEl.textContent = name;
+      if (emailEl) emailEl.textContent = email;
+      if (phoneEl) phoneEl.textContent = phone;
+      if (rutEl) rutEl.textContent = rut;
+
+      if (emailInp) emailInp.value = email === "—" ? "" : email;
+      if (phoneInp) phoneInp.value = phone === "—" ? "" : phone;
+
+      setMsg("");
+    } catch (e) {
+      console.error(e);
+      setMsg("Error de red cargando perfil.");
+    }
+  }
+
+  function resetPasswords() {
+    if (passInp) passInp.value = "";
+    if (pass2Inp) pass2Inp.value = "";
+  }
+
+  cancelBtn?.addEventListener("click", () => {
+    resetPasswords();
+    loadProfile();
+    setMsg("");
+  });
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const newEmail = (emailInp?.value || "").trim();
+    const newPhone = (phoneInp?.value || "").trim();
+    const p1 = (passInp?.value || "").trim();
+    const p2 = (pass2Inp?.value || "").trim();
+
+    if (p1 || p2) {
+      if (p1.length < 6) return setMsg("La contraseña debe tener al menos 6 caracteres.");
+      if (p1 !== p2) return setMsg("Las contraseñas no coinciden.");
+    }
+
+    setMsg("Guardando...");
+
+    const payload = {
+      email: newEmail || null,
+      phone_number: newPhone || null,
+    };
+    if (p1) payload.password = p1;
+
+    try {
+      const res = await fetch(PROFILE_URL, {
+        method: "PATCH", // cambia a PUT si tu API lo exige
+        headers: withNgrokHeader({
+          "Content-Type": "application/json",
+          "Authorization": `Token ${token}`,
+        }),
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMsg(data.detail || data.message || "No se pudo guardar.");
+        return;
+      }
+
+      resetPasswords();
+      setMsg("Cambios guardados.");
+      await loadProfile();
+    } catch (e) {
+      console.error(e);
+      setMsg("Error de red guardando perfil.");
+    }
+  });
+
+  await loadProfile();
+}
+
+
+
+/****************************************************
+ * KINE HORARIO (kine_horario.html)
+ ****************************************************/
+async function initKineHorarioPage() {
+  const page = document.body?.dataset?.page;
+  if (page !== "kine-horario") return;
+
+  const token = localStorage.getItem("authToken");
+  const user = getStoredUser();
+  if (!token) {
+    window.location.href = "ingreseAqui.html";
+    return;
+  }
+
+  // Si el rol no está en localStorage, NO redirigimos: dejamos que el backend responda 403 y mostramos mensaje.
+  if (!isKineUser(user)) {
+    const msgEl = document.querySelector("[data-kine-avail-msg]");
+    if (msgEl) msgEl.textContent = "Acceso restringido (rol no detectado en sesión).";
+  }
+
+  const dayButtons = Array.from(document.querySelectorAll("[data-kine-day]"));
+  const startInp = document.querySelector("[data-kine-avail-start]");
+  const endInp = document.querySelector("[data-kine-avail-end]");
+  const addBtn = document.querySelector("[data-kine-avail-add]");
+  const listEl = document.querySelector("[data-kine-avail-list]");
+  const template = document.querySelector(".list__item--template");
+  const clearBtn = document.querySelector("[data-kine-avail-clear]");
+  const saveBtn = document.querySelector("[data-kine-avail-save]");
+  const msgEl = document.querySelector("[data-kine-avail-msg]");
+
+  const setMsg = (t="") => { if (msgEl) msgEl.textContent = t; };
+
+  // Estado local
+  let selectedDay = "mon";
+  let blocksByDay = { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] };
+
+  // ⚠️ Endpoints sugeridos (ajústalos si tu backend usa otros)
+  const AVAIL_URL = (kineId) => `${BASE_URL}api/kinesiologists/${kineId}/availability/`;
+
+  function normalizeBlocks(data) {
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.blocks)) return data.blocks;
+    if (data?.availability && typeof data.availability === "object") return data.availability[selectedDay] || [];
+    return [];
+  }
+
+  function renderDay(dayKey) {
+    if (!listEl || !template) return;
+
+    const blocks = blocksByDay[dayKey] || [];
+    listEl.innerHTML = "";
+
+    if (!blocks.length) {
+      listEl.innerHTML = `<div class="empty">Sin bloques aún</div>`;
+      return;
+    }
+
+    blocks.forEach((b, idx) => {
+      const node = template.cloneNode(true);
+      node.hidden = false;
+      node.classList.remove("list__item--template");
+      node.classList.add("list__item");
+
+      const content = node.querySelector(".list__content");
+      const rm = node.querySelector("[data-kine-avail-remove]");
+
+      const s = String(b.start || b.start_time || "").slice(0,5);
+      const e = String(b.end || b.end_time || "").slice(0,5);
+
+      if (content) content.textContent = `${s} - ${e}`;
+      rm?.addEventListener("click", () => {
+        blocksByDay[dayKey].splice(idx, 1);
+        renderDay(dayKey);
+      });
+
+      listEl.appendChild(node);
+    });
+  }
+
+  function isValidRange(start, end) {
+    if (!start || !end) return false;
+    return start < end; // "09:00" < "10:00"
+  }
+
+  async function loadDayFromBackend(dayKey) {
+    const token = localStorage.getItem("authToken");
+    const user = getStoredUser();
+    const kineId = user?.id;
+    if (!token || !kineId) return;
+
+    setMsg("Cargando disponibilidad...");
+
+    const dayMap = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5, sun: 6 };
+    const targetDayInt = dayMap[dayKey];
+
+    try {
+      const res = await fetch(`${BASE_URL}api/kinesiologists/${kineId}/availability/`, {
+        headers: {
+          "Authorization": `Token ${token}`,
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+
+      if (!res.ok) {
+        setMsg("No se pudo cargar (revisa endpoint de disponibilidad).");
+        return;
+      }
+
+      const data = await res.json();
+
+      // En tu backend, este GET devuelve: { kinesiologist, availability: [...], appointments: [...] }
+      const items = Array.isArray(data) ? data : (data.availability || []);
+
+      blocksByDay[dayKey] = (items || [])
+  .filter(b => b.day === targetDayInt)
+  .map(b => ({
+    start: String(b.start_time || b.start || b.startTime || "").slice(0, 5),
+    end:   String(b.end_time   || b.end   || b.endTime   || "").slice(0, 5),
+  }))
+  .filter(b => b.start && b.end);
+
+
+      setMsg("");
+      renderDay(dayKey);
+    } catch (err) {
+      console.error(err);
+      setMsg("Error de red cargando disponibilidad.");
+    }
+  }
+
+  async function saveAllToBackend() {
+    const token = localStorage.getItem("authToken");
+    const user = getStoredUser();
+    const kineId = user?.id;
+
+    if (!token) {
+      setMsg("Debes iniciar sesión.");
+      return;
+    }
+    if (!kineId) {
+      setMsg("No se encontró el id del kinesiólogo en la sesión.");
+      return;
+    }
+
+    setMsg("Guardando disponibilidad...");
+
+    try {
+      // ✅ BULK: el backend acepta { availability: { mon:[{start,end}], ... } }
+      const payload = { availability: blocksByDay };
+
+      const res = await fetch(`${BASE_URL}api/kinesiologists/${kineId}/availability/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Token ${token}`,
+          "ngrok-skip-browser-warning": "true",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const text = await res.text();
+      let data = {};
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (_e) {
+        data = { raw: text };
+      }
+
+      if (!res.ok) {
+        console.error("SAVE AVAIL ERROR:", res.status, data);
+        setMsg(data.message || data.detail || "No se pudo guardar disponibilidad.");
+        return;
+      }
+
+      setMsg(data.message || "Disponibilidad guardada.");
+      await loadDayFromBackend(selectedDay);
+    } catch (e) {
+      console.error(e);
+      setMsg("Error de red guardando disponibilidad.");
+    }
+  }
+
+  // Selección de día
+  dayButtons.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      dayButtons.forEach(b => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+
+      selectedDay = btn.dataset.kineDay || "mon";
+      renderDay(selectedDay);
+      await loadDayFromBackend(selectedDay);
+    });
+  });
+
+  // Agregar bloque
+  addBtn?.addEventListener("click", () => {
+    const start = startInp?.value || "";
+    const end = endInp?.value || "";
+
+    if (!isValidRange(start, end)) {
+      setMsg("Rango inválido. Asegúrate que inicio sea menor que fin.");
+      return;
+    }
+
+    const blocks = blocksByDay[selectedDay] || [];
+    blocks.push({ start, end });
+    blocks.sort((a,b) => String(a.start).localeCompare(String(b.start)));
+
+    blocksByDay[selectedDay] = blocks;
+    setMsg("");
+    renderDay(selectedDay);
+  });
+
+  clearBtn?.addEventListener("click", () => {
+    blocksByDay[selectedDay] = [];
+    renderDay(selectedDay);
+    setMsg("Día limpiado (recuerda guardar).");
+  });
+
+  saveBtn?.addEventListener("click", async () => {
+    await saveAllToBackend();
+  });
+
+  // Boot inicial
+  const monBtn = dayButtons.find(b => b.dataset.kineDay === "mon");
+  monBtn?.classList.add("is-active");
+  renderDay(selectedDay);
+  await loadDayFromBackend(selectedDay);
+}
+
+
 /****************************************************
  * Boot
  ****************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   updateAuthUI();
+
+  initKineHorarioPage();
+
+  initKineProfilePage();
 
   initKineDirectory();
   initSchedulePage();
@@ -1612,3 +1985,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initKinePanelView();
   }
 });
+
+

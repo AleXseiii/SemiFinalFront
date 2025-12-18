@@ -9,82 +9,107 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./home.css" />
 </head>
-<body data-page="kine_perfil">
-  <div class="dashboard">
-    <aside class="sidebar">
-      <div class="sidebar__brand">
-        <div class="sidebar__logo"></div>
-        <div class="sidebar__title">Centro de Salud y Bienestar</div>
-      </div>
-      <nav class="sidebar__nav" aria-label="Navegación principal">
-        <a class="sidebar__link" href="./panelkine.html">Panel</a>
-        <a class="sidebar__link is-active" href="./kine_perfil.html">Perfil</a>
-        <a class="sidebar__link" href="./kine_horario.html">Horario</a>
-      </nav>
-    </aside>
-
-    <main class="dashboard__main" aria-labelledby="profile-title">
-      <header class="page-header">
-        <div class="page-header__titles">
-          <p class="page-header__eyebrow">Cuenta</p>
-          <h1 class="page-header__title" id="profile-title">Perfil del kinesiólogo</h1>
-          <p class="page-header__subtitle">Revisa tu información y actualiza los datos de contacto y acceso.</p>
+<body data-page="kine-perfil">
+  <div class="layout">
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand__logo">
+          <!-- Sustituye este bloque por tu logotipo: <img src="ruta/logo.svg" alt="Nombre de la marca" /> -->
         </div>
-      </header>
+        <div class="brand__text">
+          <span>Centro de salud y</span>
+          <span class="brand__text--bold">Bienestar</span>
+        </div>
+      </div>
+      <nav class="site-nav">
+  <a data-nav-target="home" href="./home.html#inicio">Inicio</a>
+  <a data-nav-target="valores" href="./valores.html">Valores</a>
+  <a data-nav-target="quienes" href="./quienes.html">¿Quiénes somos?</a>
+  <a data-nav-target="agendar" href="./agendar.html">Agendar hora</a>
+  <a data-nav-target="ingresar" href="./ingreseAqui.html" data-auth-link>
+    <span data-auth-label>Ingresar</span>
+    <span class="site-nav__user" data-auth-user>Invitado</span>
+  </a>
+</nav>
+    </header>
 
-      <div class="grid grid--two-columns">
-        <section class="card" aria-labelledby="summary-title">
-          <div class="card__head">
-            <h2 class="card__title" id="summary-title">Datos del profesional</h2>
+      <main class="dashboard-page" aria-labelledby="profile-title">
+      <div class="dashboard">
+        <aside class="sidebar">
+          <div class="sidebar__brand">
+            <div class="sidebar__logo"></div>
+            <div class="sidebar__title">Centro de Salud y Bienestar</div>
           </div>
-          <dl class="detail__grid">
-            <div class="detail__item">
-              <dt class="detail__label">Nombre</dt>
-              <dd class="detail__value" data-kine-profile-name>—</dd>
-            </div>
-            <div class="detail__item">
-              <dt class="detail__label">Email</dt>
-              <dd class="detail__value" data-kine-profile-email>—</dd>
-            </div>
-            <div class="detail__item">
-              <dt class="detail__label">Teléfono</dt>
-              <dd class="detail__value" data-kine-profile-phone>—</dd>
-            </div>
-            <div class="detail__item">
-              <dt class="detail__label">RUT</dt>
-              <dd class="detail__value" data-kine-profile-rut>—</dd>
-            </div>
-          </dl>
-        </section>
+          <nav class="sidebar__nav" aria-label="Navegación principal">
+            <a class="sidebar__link" href="./panelkine.html">Panel</a>
+            <a class="sidebar__link is-active" href="./kine_perfil.html">Perfil</a>
+            <a class="sidebar__link" href="./kine_horario.html">Horario</a>
+          </nav>
+        </aside>
 
-        <section class="card" aria-labelledby="edit-title">
-          <div class="card__head">
-            <h2 class="card__title" id="edit-title">Editar datos</h2>
+        <div class="dashboard__main">
+          <header class="page-header">
+            <div class="page-header__titles">
+              <p class="page-header__eyebrow">Cuenta</p>
+              <h1 class="page-header__title" id="profile-title">Perfil del kinesiólogo</h1>
+              <p class="page-header__subtitle">Revisa tu información y actualiza los datos de contacto y acceso.</p>
+            </div>
+            </header>
+
+        <div class="grid grid--two-columns">
+            <section class="card" aria-labelledby="summary-title">
+              <div class="card__head">
+                <h2 class="card__title" id="summary-title">Datos del profesional</h2>
+              </div>
+              <dl class="detail__grid">
+                <div class="detail__item">
+                  <dt class="detail__label">Nombre</dt>
+                  <dd class="detail__value" data-kine-profile-name>—</dd>
+                </div>
+                <div class="detail__item">
+                  <dt class="detail__label">Email</dt>
+                  <dd class="detail__value" data-kine-profile-email>—</dd>
+                </div>
+                <div class="detail__item">
+                  <dt class="detail__label">Teléfono</dt>
+                  <dd class="detail__value" data-kine-profile-phone>—</dd>
+                </div>
+                <div class="detail__item">
+                  <dt class="detail__label">RUT</dt>
+                  <dd class="detail__value" data-kine-profile-rut>—</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section class="card" aria-labelledby="edit-title">
+              <div class="card__head">
+                <h2 class="card__title" id="edit-title">Editar datos</h2>
+              </div>
+              <form class="form" data-kine-profile-form>
+                <div class="form__group">
+                  <label class="form__label" for="profile-email">Email</label>
+                  <input class="input" id="profile-email" type="email" data-kine-profile-email-input placeholder="" />
+                </div>
+                <div class="form__group">
+                  <label class="form__label" for="profile-phone">Teléfono</label>
+                  <input class="input" id="profile-phone" type="tel" data-kine-profile-phone-input placeholder="" />
+                </div>
+                <div class="form__group">
+                  <label class="form__label" for="profile-pass">Contraseña nueva</label>
+                  <input class="input" id="profile-pass" type="password" data-kine-profile-pass-input placeholder="" />
+                </div>
+                <div class="form__group">
+                  <label class="form__label" for="profile-pass2">Confirmar contraseña</label>
+                  <input class="input" id="profile-pass2" type="password" data-kine-profile-pass2-input placeholder="" />
+                </div>
+                <div class="actions actions--end">
+                  <button class="button button--ghost" type="button" data-kine-profile-cancel>Cancelar</button>
+                  <button class="button button--solid" type="submit" data-kine-profile-save>Guardar</button>
+                </div>
+                <p class="status" data-kine-profile-msg></p>
+              </form>
+            </section>
           </div>
-          <form class="form" data-kine-profile-form>
-            <div class="form__group">
-              <label class="form__label" for="profile-email">Email</label>
-              <input class="input" id="profile-email" type="email" data-kine-profile-email-input placeholder="" />
-            </div>
-            <div class="form__group">
-              <label class="form__label" for="profile-phone">Teléfono</label>
-              <input class="input" id="profile-phone" type="tel" data-kine-profile-phone-input placeholder="" />
-            </div>
-            <div class="form__group">
-              <label class="form__label" for="profile-pass">Contraseña nueva</label>
-              <input class="input" id="profile-pass" type="password" data-kine-profile-pass-input placeholder="" />
-            </div>
-            <div class="form__group">
-              <label class="form__label" for="profile-pass2">Confirmar contraseña</label>
-              <input class="input" id="profile-pass2" type="password" data-kine-profile-pass2-input placeholder="" />
-            </div>
-            <div class="actions actions--end">
-              <button class="button button--ghost" type="button" data-kine-profile-cancel>Cancelar</button>
-              <button class="button button--solid" type="submit" data-kine-profile-save>Guardar</button>
-            </div>
-            <p class="status" data-kine-profile-msg></p>
-          </form>
-        </section>
       </div>
     </main>
   </div>
