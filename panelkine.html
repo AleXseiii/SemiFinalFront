@@ -6,259 +6,95 @@
   <title>Panel del Kinesiólogo | Centro de Salud y Bienestar</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: radial-gradient(circle at 20% 20%, rgba(54, 199, 146, 0.15), transparent 35%),
-            radial-gradient(circle at 80% 0%, rgba(30, 120, 90, 0.25), transparent 30%),
-            linear-gradient(145deg, #0d1f1a 0%, #092016 35%, #0e2b20 75%, #0b1914 100%);
-      --glass: rgba(255, 255, 255, 0.04);
-      --stroke: rgba(255, 255, 255, 0.08);
-      --soft: rgba(255, 255, 255, 0.12);
-      --text: #e8f3ec;
-      --muted: #8ba9a0;
-      --accent: #36c792;
-      --accent-2: #1f8a64;
-      --danger: #e95f5f;
-      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      padding: 22px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      backdrop-filter: blur(10px);
-      background: linear-gradient(135deg, rgba(15, 42, 33, 0.7), rgba(13, 54, 41, 0.35));
-      border-bottom: 1px solid var(--stroke);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand__logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: linear-gradient(145deg, #1f8a64, #36c792);
-      box-shadow: 0 10px 25px rgba(54, 199, 146, 0.4);
-    }
-
-    .brand__text { margin: 0; font-weight: 700; letter-spacing: 0.4px; }
-
-    .nav { display: flex; gap: 18px; color: var(--muted); font-size: 14px; }
-
-    main {
-      flex: 1;
-      padding: 28px 32px 40px;
-      max-width: 1200px;
-      width: 100%;
-      margin: 0 auto;
-    }
-
-    .hero {
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .hero__title { margin: 0 0 6px; font-size: 26px; font-weight: 700; letter-spacing: 0.2px; }
-    .hero__subtitle { margin: 0; color: var(--muted); }
-
-    .glass-btn {
-      border: 1px solid var(--stroke);
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-      color: var(--text);
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      letter-spacing: 0.2px;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    }
-    .glass-btn:hover { transform: translateY(-1px); border-color: rgba(54, 199, 146, 0.6); box-shadow: 0 16px 30px rgba(54, 199, 146, 0.16); }
-    .glass-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-    .glass-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 18px;
-    }
-
-    .card {
-      background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-      border: 1px solid var(--stroke);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(12px);
-    }
-
-    .card__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-    .card__title { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: 0.2px; }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 32px;
-      height: 24px;
-      padding: 0 10px;
-      border-radius: 999px;
-      border: 1px solid var(--stroke);
-      background: rgba(54, 199, 146, 0.12);
-      color: var(--text);
-      font-weight: 600;
-      font-size: 12px;
-    }
-
-    .badge {
-      padding: 6px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--stroke);
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.04);
-      font-size: 12px;
-      letter-spacing: 0.2px;
-    }
-
-    .list { display: flex; flex-direction: column; gap: 12px; }
-    .placeholder { padding: 14px; border-radius: 14px; border: 1px dashed var(--stroke); text-align: center; color: var(--muted); }
-
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .kv { padding: 12px; border-radius: 14px; border: 1px solid var(--stroke); background: rgba(255, 255, 255, 0.03); }
-    .kv__k { display: block; color: var(--muted); font-size: 12px; letter-spacing: 0.2px; }
-    .kv__v { display: block; margin-top: 6px; font-weight: 700; }
-
-    .detail { display: flex; flex-direction: column; gap: 6px; }
-
-    .actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-
-    .btn-primary { background: linear-gradient(135deg, rgba(54, 199, 146, 0.9), rgba(31, 138, 100, 0.9)); border-color: rgba(54, 199, 146, 0.7); color: #0c1c16; }
-    .btn-danger { background: linear-gradient(135deg, rgba(233, 95, 95, 0.9), rgba(179, 48, 48, 0.9)); border-color: rgba(233, 95, 95, 0.7); color: #200909; }
-
-    .divider { height: 1px; width: 100%; background: var(--stroke); margin: 14px 0; }
-
-    textarea {
-      width: 100%;
-      min-height: 120px;
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text);
-      padding: 12px;
-      font-family: inherit;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-      resize: vertical;
-    }
-    textarea:focus { border-color: rgba(54, 199, 146, 0.65); box-shadow: 0 10px 25px rgba(54, 199, 146, 0.16); }
-
-    .note { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.45; }
-    .msg { font-size: 13px; color: var(--muted); min-height: 18px; }
-
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./home.css" />
 </head>
-<body>
-  <header>
-    <div class="brand">
-      <div class="brand__logo" aria-hidden="true"></div>
-      <div>
-        <p class="brand__text">Centro de Salud y Bienestar</p>
-        <small style="color: var(--muted);">Panel del Kinesiólogo</small>
+<body data-page="panelkine">
+  <div class="layout">
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand__logo"></div>
+        <div class="brand__text">
+          <span>Centro de salud y</span>
+          <span class="brand__text--bold">Bienestar</span>
+        </div>
       </div>
-    </div>
-    <nav class="nav" aria-label="Menú principal">
-      <span>Inicio</span>
-      <span>Pacientes</span>
-      <span>Agenda</span>
-    </nav>
-  </header>
-    <main>
-    <div class="hero">
-      <div>
-        <h1 class="hero__title">Mis próximas consultas</h1>
-        <p class="hero__subtitle">Organiza tu agenda y gestiona el detalle de cada sesión en un entorno seguro.</p>
-      </div>
-      <button class="glass-btn" type="button" data-kine-refresh>Actualizar</button>
-    </div>
-    <div class="layout">
-      <section class="card" aria-labelledby="upcoming-title">
-        <div class="card__head">
-          <h2 class="card__title" id="upcoming-title">Agenda próxima</h2>
-          <span class="pill" data-kine-count>0</span>
-        </div>
-        <div class="list" data-kine-upcoming>
-          <div class="placeholder">Cargando…</div>
-        </div>
-      </section>
-      <section class="card" aria-labelledby="detail-title">
-        <div class="card__head">
-          <h2 class="card__title" id="detail-title">Detalle de la consulta</h2>
-          <span class="badge" data-kine-status>-</span>
-        </div>
-        <div class="detail" data-kine-detail hidden>
-          <div class="detail-grid">
-            <div class="kv">
-              <span class="kv__k">Paciente</span>
-              <span class="kv__v" data-kine-patient>-</span>
-            </div>
-            <div class="kv">
-              <span class="kv__k">Fecha y hora</span>
-              <span class="kv__v" data-kine-when>-</span>
-            </div>
-          </div>
-          <div class="divider" aria-hidden="true"></div>
+      <nav class="site-nav">
+  <a data-nav-target="home" href="./home.html#inicio">Inicio</a>
+  <a data-nav-target="valores" href="./valores.html">Valores</a>
+  <a data-nav-target="quienes" href="./quienes.html">¿Quiénes somos?</a>
+  <a data-nav-target="agendar" href="./agendar.html">Agendar hora</a>
+  <a data-nav-target="ingresar" href="./ingreseAqui.html" data-auth-link>
+    <span data-auth-label>Ingresar</span>
+    <span class="site-nav__user" data-auth-user>Invitado</span>
+  </a>
+</nav>
+    </header>
 
-          <div class="actions">
-            <button class="glass-btn btn-primary" type="button" data-kine-confirm disabled>Confirmar</button>
-            <button class="glass-btn btn-danger" type="button" data-kine-cancel disabled>Cancelar</button>
-          </div>
-          <div class="divider" aria-hidden="true"></div>
-          <h3 class="card__title" style="font-size: 15px; margin-bottom: 6px;">Comentario de sesión</h3>
-          <p class="note">Al guardar un comentario, la sesión se marcará como <strong>realizada</strong> y el paciente lo verá reflejado en su historial.</p>
-          <label for="comentario" class="visually-hidden">Comentario de sesión</label>
-          <textarea id="comentario" data-kine-comment placeholder="Escribe el avance del paciente…"></textarea>
-          <div class="actions" style="margin-top: 10px;">
-            <button class="glass-btn" type="button" data-kine-save-comment disabled>Guardar comentario (marca realizada)</button>
-            <span class="msg" data-kine-msg></span>
-          </div>
+    <main class="kine" aria-labelledby="kine-title">
+      <div class="kine__hero">
+        <div>
+          <p class="kine__eyebrow">Panel profesional</p>
+          <h1 class="kine__title" id="kine-title">Panel del kinesiólogo</h1>
+          <p class="kine__subtitle">Gestiona tus próximas consultas y registra el avance de cada paciente. El acceso está disponible solo con la sesión de kinesiólogo iniciada.</p>
         </div>
-        <div class="placeholder" data-kine-detail-empty>
-          Selecciona una consulta para ver el detalle.
-        </div>
+        <button class="kine__button" type="button" data-kine-refresh>Actualizar agenda</button>
+      </div>
+       <div class="kine__grid">
+        <section class="kine-card" aria-labelledby="upcoming-title">
+          <div class="kine-card__head">
+            <h2 class="kine-card__title" id="upcoming-title">Agenda próxima</h2>
+            <span class="kine-pill" data-kine-count>0</span>
+          </div>
+          <div class="kine__list" data-kine-upcoming>
+            <div class="kine__empty">Cargando…</div>
+          </div>
         </section>
-    </div>
-  </main>
-  
+        <section class="kine-card" aria-labelledby="detail-title">
+          <div class="kine-card__head">
+            <div>
+              <p class="kine__eyebrow">Detalle</p>
+              <h2 class="kine-card__title" id="detail-title">Consulta seleccionada</h2>
+            </div>
+            <span class="kine-badge" data-kine-status>-</span>
+          </div>
+          <div class="kine__detail" data-kine-detail hidden>
+            <div class="kine__detail-grid">
+              <div class="kine__kv">
+                <span class="kine__kv-key">Paciente</span>
+                <span class="kine__kv-value" data-kine-patient>-</span>
+              </div>
+              <div class="kine__kv">
+                <span class="kine__kv-key">Fecha y hora</span>
+                <span class="kine__kv-value" data-kine-when>-</span>
+              </div>
+            </div>
+            <div class="kine__actions">
+              <button class="kine__button kine__button--solid" type="button" data-kine-confirm disabled>Confirmar</button>
+              <button class="kine__button kine__button--danger" type="button" data-kine-cancel disabled>Cancelar</button>
+            </div>
+            <div class="kine__note">
+              <h3 class="kine__note-title">Comentario de sesión</h3>
+              <p>Al guardar un comentario, la sesión se marcará como <strong>realizada</strong> y el paciente lo verá reflejado en su historial.</p>
+            </div>
+
+            <label class="visually-hidden" for="comentario">Comentario de sesión</label>
+            <textarea id="comentario" data-kine-comment placeholder="Escribe el avance del paciente…"></textarea>
+            <div class="kine__actions">
+              <button class="kine__button kine__button--ghost" type="button" data-kine-save-comment disabled>Guardar comentario (marca realizada)</button>
+              <span class="kine__message" data-kine-msg></span>
+           
+            </div>
+             <div class="kine__empty" data-kine-detail-empty>
+            Selecciona una consulta para ver el detalle.
+          </div>
+          </div>
+        </section>
+         </div>
+    </main>
+  </div>
+  <script src="./api.js" type="module"></script>
+  <script src="./request.js" type="module"></script>
+  <script src="./app.js" type="module"></script>
+</body>
+</html>

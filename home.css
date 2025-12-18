@@ -4098,3 +4098,317 @@ kine-directory__eyebrow {
   display: flex;
   gap: 12px;
 }
+
+/* ---------- Panel del Kinesiólogo ---------- */
+
+body[data-page="panelkine"] {
+  background: radial-gradient(circle at 18% 18%, #1a5c50, var(--surface) 40%, #052520 100%);
+}
+
+.kine {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.kine__hero {
+  display: grid;
+  grid-template-columns: 1.2fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: clamp(20px, 4vw, 28px) clamp(18px, 4vw, 32px);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(18, 83, 72, 0.9), rgba(10, 40, 35, 0.9));
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 768px) {
+  .kine__hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kine__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(109, 240, 192, 0.4);
+  background: rgba(18, 83, 72, 0.3);
+  color: var(--accent);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.kine__title {
+  margin-top: 10px;
+  margin-bottom: 8px;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+}
+
+.kine__subtitle {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.kine__grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 18px;
+}
+
+@media (max-width: 960px) {
+  .kine__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kine-card {
+  background: linear-gradient(150deg, rgba(18, 83, 72, 0.65), rgba(10, 40, 35, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.kine-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.kine-card__title {
+  font-size: 18px;
+}
+
+.kine-pill {
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(109, 240, 192, 0.5);
+  background: rgba(109, 240, 192, 0.16);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.kine-badge {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  font-size: 13px;
+}
+
+.kine__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kine__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 51, 45, 0.6);
+}
+
+.kine__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kine__name {
+  font-weight: 600;
+}
+
+.kine__when {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.kine__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(109, 240, 192, 0.15);
+  color: var(--accent);
+  font-weight: 600;
+  border: 1px solid rgba(109, 240, 192, 0.35);
+}
+
+.kine__btn {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(109, 240, 192, 0.35);
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kine__btn:hover,
+.kine__btn:focus-visible {
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(6, 42, 36, 0.4);
+}
+
+.kine__detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.kine__detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.kine__kv {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 51, 45, 0.5);
+}
+
+.kine__kv-key {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.kine__kv-value {
+  display: block;
+  margin-top: 6px;
+  font-weight: 700;
+}
+
+.kine__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.kine__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(109, 240, 192, 0.4);
+  background: rgba(18, 83, 72, 0.4);
+  color: var(--text-main);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.kine__button:hover,
+.kine__button:focus-visible {
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(6, 42, 36, 0.4);
+}
+
+.kine__button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.kine__button--solid {
+  background: linear-gradient(135deg, #6df0c0, #33c6a1);
+  color: #0a2823;
+  border-color: rgba(109, 240, 192, 0.8);
+}
+
+.kine__button--danger {
+  background: linear-gradient(135deg, #ff9a9a, #e36c6c);
+  border-color: rgba(255, 154, 154, 0.8);
+  color: #2c0d0d;
+}
+
+.kine__button--ghost {
+  background: transparent;
+}
+
+textarea[data-kine-comment] {
+  width: 100%;
+  min-height: 130px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(12, 51, 45, 0.5);
+  color: var(--text-main);
+  padding: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+textarea[data-kine-comment]:focus-visible {
+  outline: none;
+  border-color: rgba(109, 240, 192, 0.65);
+  box-shadow: 0 14px 24px rgba(6, 42, 36, 0.45);
+}
+
+.kine__note {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(12, 51, 45, 0.35);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.kine__note-title {
+  margin-bottom: 6px;
+  color: var(--text-main);
+}
+
+.kine__message {
+  color: var(--text-muted);
+  min-height: 18px;
+}
+
+.kine__empty {
+  padding: 16px;
+  text-align: center;
+  border-radius: 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(12, 51, 45, 0.35);
+  color: var(--text-muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
