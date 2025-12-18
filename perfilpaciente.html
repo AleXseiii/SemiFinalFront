@@ -1,37 +1,71 @@
-
-<section class="profile-card">
-  <header class="profile-card__header">
-    <h2>Datos personales</h2>
-    <button id="editProfileBtn" class="btn-secondary">Editar datos</button>
+<section class="profile-section">
+  <header class="page-header">
+    <div class="page-header__titles">
+      <p class="page-header__eyebrow">Cuenta</p>
+      <h1 class="page-header__title">Perfil del paciente</h1>
+      <p class="page-header__subtitle">Revisa tus datos registrados y actualízalos cuando sea necesario.</p>
+    </div>
   </header>
 
-  <div id="profileView">
-    <p><strong>Nombre:</strong> <span data-profile-name></span></p>
-    <p><strong>RUT:</strong> <span data-profile-rut></span></p>
-    <p><strong>Correo:</strong> <span data-profile-email></span></p>
-    <p><strong>Teléfono:</strong> <span data-profile-phone></span></p>
+  <div class="grid grid--two-columns">
+    <article class="card" aria-labelledby="patient-data-title">
+      <div class="card__head">
+        <div>
+          <p class="card__eyebrow">Resumen</p>
+          <h2 class="card__title" id="patient-data-title">Datos del paciente</h2>
+        </div>
+        <button id="editProfileBtn" class="button button--ghost">Editar datos</button>
+      </div>
+
+      <dl id="profileView" class="detail__grid">
+        <div class="detail__item">
+          <dt class="detail__label">Nombre</dt>
+          <dd class="detail__value" data-profile-name>—</dd>
+        </div>
+        <div class="detail__item">
+          <dt class="detail__label">RUT</dt>
+          <dd class="detail__value" data-profile-rut>—</dd>
+        </div>
+        <div class="detail__item">
+          <dt class="detail__label">Correo</dt>
+          <dd class="detail__value" data-profile-email>—</dd>
+        </div>
+        <div class="detail__item">
+          <dt class="detail__label">Teléfono</dt>
+          <dd class="detail__value" data-profile-phone>—</dd>
+        </div>
+      </dl>
+    </article>
+
+    <article class="card" aria-labelledby="patient-edit-title">
+      <div class="card__head">
+        <div>
+          <p class="card__eyebrow">Edición</p>
+          <h2 class="card__title" id="patient-edit-title">Editar datos</h2>
+        </div>
+      </div>
+
+      <form id="profileForm" class="form" hidden>
+        <div class="form__group">
+          <label class="form__label" for="profileName">Nombre completo</label>
+          <input class="input" type="text" id="profileName" />
+        </div>
+
+        <div class="form__group">
+          <label class="form__label" for="profileEmail">Correo electrónico</label>
+          <input class="input" type="email" id="profileEmail" />
+        </div>
+
+        <div class="form__group">
+          <label class="form__label" for="profilePhone">Teléfono</label>
+          <input class="input" type="text" id="profilePhone" />
+        </div>
+
+        <div class="actions actions--end">
+          <button type="button" id="cancelEditBtn" class="button button--ghost">Cancelar</button>
+          <button type="submit" class="button button--solid">Guardar cambios</button>
+        </div>
+      </form>
+    </article>
   </div>
-
-  <form id="profileForm" hidden>
-    <div class="form-group">
-      <label>Nombre completo</label>
-      <input type="text" id="profileName" />
-    </div>
-
-    <div class="form-group">
-      <label>Correo electrónico</label>
-      <input type="email" id="profileEmail" />
-    </div>
-
-    <div class="form-group">
-      <label>Teléfono</label>
-      <input type="text" id="profilePhone" />
-    </div>
-
-    <div class="form-actions">
-      <button type="submit" class="btn-primary">Guardar cambios</button>
-      <button type="button" id="cancelEditBtn" class="btn-secondary">Cancelar</button>
-    </div>
-  </form>
 </section>
-

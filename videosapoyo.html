@@ -1,99 +1,130 @@
 <section class="videos">
   <header class="videos__header">
-    <div>
+    <div class="videos__titles">
       <span class="videos__badge">Recursos en video</span>
       <h1 class="videos__title">Videos de apoyo</h1>
       <p class="videos__description">
-        Encuentra ejercicios guiados y recomendaciones complementarias
-        para continuar con tu tratamiento en casa.
+        Encuentra ejercicios guiados y recomendaciones complementarias para continuar con tu tratamiento en casa.
       </p>
     </div>
 
-    <label class="videos__search">
+    <label class="videos__search" aria-label="Buscar ejercicio en videos de apoyo">
       <input type="search" placeholder="Buscar ejercicio" />
-      <span class="videos__search-icon">🔍</span>
+      <span class="videos__search-icon" aria-hidden="true">🔍</span>
     </label>
   </header>
 
   <div class="videos__grid">
-    <!-- VIDEO 1 -->
     <article class="video-card">
       <div class="video-card__media">
-        <iframe
-          src="https://www.youtube.com/embed/2pLT-olgUJs"
-          title="Elongación cervical"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen>
-        </iframe>
+        <div class="video-card__iframe">
+          <iframe
+            src="https://www.youtube.com/embed/2pLT-olgUJs"
+            title="Elongación cervical"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <a class="button button--ghost video-card__fallback" href="https://www.youtube.com/watch?v=2pLT-olgUJs" target="_blank" rel="noreferrer">
+          Abrir en YouTube
+        </a>
       </div>
       <div class="video-card__content">
-        <h3>Elongación cervical</h3>
-        <p>
-          Rutina guiada para liberar tensión cervical y mejorar la postura
-          en personas que trabajan sentadas.
+        <div class="video-card__header">
+          <h3>Elongación cervical</h3>
+          <span class="video-card__tag">Cuello</span>
+        </div>
+        <p class="video-card__summary">
+          Rutina guiada para liberar tensión cervical y mejorar la postura en personas que trabajan sentadas.
         </p>
-        <span class="video-card__tag">Cuello</span>
+        <div class="video-card__actions">
+          <a class="button button--solid" href="https://www.youtube.com/watch?v=2pLT-olgUJs" target="_blank" rel="noreferrer">Ver</a>
+        </div>
       </div>
     </article>
 
-    <!-- VIDEO 2 -->
     <article class="video-card">
       <div class="video-card__media">
-        <iframe
-          src="https://www.youtube.com/embed/9Jf-3pM2gho"
-          title="Fortalecer rodilla"
-          frameborder="0"
-          allowfullscreen>
-        </iframe>
+        <div class="video-card__iframe">
+          <iframe
+            src="https://www.youtube.com/embed/9Jf-3pM2gho"
+            title="Fortalecer rodilla"
+            frameborder="0"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <a class="button button--ghost video-card__fallback" href="https://www.youtube.com/watch?v=9Jf-3pM2gho" target="_blank" rel="noreferrer">
+          Abrir en YouTube
+        </a>
       </div>
       <div class="video-card__content">
-        <h3>Fortalecer rodilla</h3>
-        <p>
-          Ejercicios progresivos para estabilizar la articulación de la rodilla
-          y prevenir lesiones.
+        <div class="video-card__header">
+          <h3>Fortalecer rodilla</h3>
+          <span class="video-card__tag">Rodilla</span>
+        </div>
+        <p class="video-card__summary">
+          Ejercicios progresivos para estabilizar la articulación de la rodilla y prevenir lesiones.
         </p>
-        <span class="video-card__tag">Rodilla</span>
+        <div class="video-card__actions">
+          <a class="button button--solid" href="https://www.youtube.com/watch?v=9Jf-3pM2gho" target="_blank" rel="noreferrer">Ver</a>
+        </div>
       </div>
     </article>
 
-    <!-- VIDEO 3 -->
     <article class="video-card">
       <div class="video-card__media">
-        <iframe
-          src="https://www.youtube.com/embed/4BOTvaRaDjI"
-          title="Movilidad lumbar"
-          frameborder="0"
-          allowfullscreen>
-        </iframe>
+        <div class="video-card__iframe">
+          <iframe
+            src="https://www.youtube.com/embed/4BOTvaRaDjI"
+            title="Movilidad lumbar"
+            frameborder="0"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <a class="button button--ghost video-card__fallback" href="https://www.youtube.com/watch?v=4BOTvaRaDjI" target="_blank" rel="noreferrer">
+          Abrir en YouTube
+        </a>
       </div>
       <div class="video-card__content">
-        <h3>Movilidad lumbar</h3>
-        <p>
-          Secuencia suave para reducir rigidez en la zona baja de la espalda
-          y mejorar la movilidad.
+        <div class="video-card__header">
+          <h3>Movilidad lumbar</h3>
+          <span class="video-card__tag">Zona lumbar</span>
+        </div>
+        <p class="video-card__summary">
+          Secuencia suave para reducir rigidez en la zona baja de la espalda y mejorar la movilidad.
         </p>
-        <span class="video-card__tag">Zona lumbar</span>
+        <div class="video-card__actions">
+          <a class="button button--solid" href="https://www.youtube.com/watch?v=4BOTvaRaDjI" target="_blank" rel="noreferrer">Ver</a>
+        </div>
       </div>
     </article>
 
-    <!-- VIDEO 4 -->
     <article class="video-card">
       <div class="video-card__media">
-        <iframe
-          src="https://www.youtube.com/embed/ml6cT4AZdqI"
-          title="Ejercicios de hombro"
-          frameborder="0"
-          allowfullscreen>
-        </iframe>
+        <div class="video-card__iframe">
+          <iframe
+            src="https://www.youtube.com/embed/ml6cT4AZdqI"
+            title="Movilidad de hombros"
+            frameborder="0"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <a class="button button--ghost video-card__fallback" href="https://www.youtube.com/watch?v=ml6cT4AZdqI" target="_blank" rel="noreferrer">
+          Abrir en YouTube
+        </a>
       </div>
       <div class="video-card__content">
-        <h3>Movilidad de hombros</h3>
-        <p>
-          Ejercicios para mejorar el rango de movimiento del hombro
-          y reducir dolor.
+        <div class="video-card__header">
+          <h3>Movilidad de hombros</h3>
+          <span class="video-card__tag">Hombro</span>
+        </div>
+        <p class="video-card__summary">
+          Ejercicios para mejorar el rango de movimiento del hombro y reducir dolor.
         </p>
-        <span class="video-card__tag">Hombro</span>
+        <div class="video-card__actions">
+          <a class="button button--solid" href="https://www.youtube.com/watch?v=ml6cT4AZdqI" target="_blank" rel="noreferrer">Ver</a>
+        </div>
       </div>
     </article>
   </div>

@@ -736,10 +736,17 @@ requestAnimationFrame(() => {
 
   confirmBtn.addEventListener("click", () => {
     // pendingBooking ya tiene kine + servicio + (si seleccionó) fecha/hora
-    if (!pending?.date || !pending?.startTime) return;
+    const normalized = {
+      ...pending,
+      startTime: pending?.startTime || pending?.start_time,
+    };
 
-    if (!isUserLoggedIn()) window.location.href = "datos.html";
-    else window.location.href = "historial.html";
+    if (!normalized?.date || !normalized?.startTime) return;
+
+    localStorage.setItem("pendingBooking", JSON.stringify(normalized));
+
+    const nextStep = isUserLoggedIn() ? "confirmacion.html" : "datos.html";
+    window.location.href = nextStep;
   });
 
   // Boot
@@ -1193,6 +1200,25 @@ async function loadPatientHistory() {
   }
 }
 
+function initConfirmacionPage() {
+  const page = document.body?.dataset?.page;
+  if (page !== "confirmacion") return;
+
+  const dateEl = document.querySelector("[data-confirmation-date]");
+  const timeEl = document.querySelector("[data-confirmation-time]");
+  const professionalEl = document.querySelector("[data-confirmation-professional]");
+  const modalityEl = document.querySelector("[data-confirmation-modality]");
+
+  const pending = safeParseJSON(localStorage.getItem("pendingBooking"), null);
+  if (!pending) return;
+
+  const start = pending.startTime || pending.start_time;
+
+  if (dateEl && pending.date) dateEl.textContent = pending.date;
+  if (timeEl && start) timeEl.textContent = `${String(start).slice(0, 5)} hrs`;
+  if (professionalEl && pending.kinesiologistName) professionalEl.textContent = pending.kinesiologistName;
+  if (modalityEl) modalityEl.textContent = pending.modality || "Presencial";
+}
 
 async function initKinePanelView() {
   const token = localStorage.getItem("authToken");
@@ -1979,6 +2005,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSchedulePage();
   initLoginSystem();
   initPatientDataPage();
+  initConfirmacionPage();
   initPatientHistoryPage();
   initHistoryViews();
   initProfilePage();
