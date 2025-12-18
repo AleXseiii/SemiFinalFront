@@ -3151,16 +3151,17 @@ a {
   display: grid;
   grid-template-columns: minmax(280px, 320px) 1fr;
   gap: clamp(24px, 4vw, 40px);
+  align-items: start;
 }
 
-.history__sidebar {
-  background: linear-gradient(160deg, #134f44, #0b3830 72%);
+.history__nav-card {
+  min-height: auto;
+  position: sticky;
+  top: 24px;
+  gap: 24px;
   border-radius: var(--radius-lg);
-  padding: 28px;
-  box-shadow: var(--shadow);
-  display: grid;
-  gap: 22px;
-  align-content: start;
+  background: rgba(5, 25, 21, 0.82);
+  border: 1px solid rgba(109, 240, 192, 0.12);
 }
 
 .history__profile {
@@ -3878,16 +3879,16 @@ kine-directory__eyebrow {
 }
 
 .service-card {
-  background: rgba(0, 0, 0, 0.45);
+  background: linear-gradient(160deg, rgba(0, 0, 0, 0.45), rgba(8, 46, 39, 0.65));
   border-radius: 18px;
   padding: 1.1rem 1.3rem;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  gap: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
   transition: transform 0.18s ease, box-shadow 0.18s ease,
-    border-color 0.18s ease;
+  border-color 0.18s ease, background 0.18s ease;
 }
 
 .service-card:hover {
@@ -3896,10 +3897,28 @@ kine-directory__eyebrow {
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.65);
 }
 
+.service-card--selected {
+  border-color: rgba(60, 255, 192, 0.8);
+  background: linear-gradient(145deg, rgba(18, 83, 72, 0.65), rgba(9, 57, 48, 0.85));
+  box-shadow: 0 18px 50px rgba(6, 42, 36, 0.55);
+}
+
 .service-card__name {
   font-size: 0.95rem;
   font-weight: 600;
   color: #ffffff;
+}
+
+.service-card__info h4 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.service-card__info span {
+  display: inline-block;
+  color: #b3d9cf;
+  font-size: 0.85rem;
+  margin-top: 2px;
 }
 
 .service-card__meta {
@@ -3920,21 +3939,25 @@ kine-directory__eyebrow {
   justify-content: flex-end;
 }
 
-.service-card__btn {
-  border-radius: 999px;
-  padding: 0.4rem 1.1rem;
-  border: none;
-  font-size: 0.8rem;
-  font-weight: 500;
+.service-card__action {
+  align-self: flex-start;
+  border-radius: 14px;
+  padding: 10px 16px;
+  border: 1px solid rgba(109, 240, 192, 0.45);
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  background: #27c995;
-  color: #00241a;
-  transition: background 0.15s ease, transform 0.15s ease;
+  background: linear-gradient(135deg, #6df0c0, #33c6a1);
+  color: #0b2e26;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
-.service-card__btn:hover {
-  background: #2ff0aa;
+  .service-card__action:hover,
+.service-card__action:focus-visible {
+  outline: none;
   transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(6, 42, 36, 0.5);
+  filter: brightness(1.02);
 }
 
 /* ---------- Agenda semanal ---------- */
@@ -4486,6 +4509,12 @@ textarea[data-kine-comment]:focus-visible {
   color: #0b2e26;
   background: linear-gradient(120deg, #6df0c0, #33c6a1);
   box-shadow: 0 12px 26px rgba(6, 42, 36, 0.35);
+}
+
+.history__nav-card {
+  min-height: auto;
+  top: 24px;
+  box-shadow: 18px 0 40px rgba(0, 0, 0, 0.18);
 }
 
 .dashboard__main {

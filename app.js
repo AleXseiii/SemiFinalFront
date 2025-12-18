@@ -1126,9 +1126,13 @@ function initHistoryViews() {
     });
   });
 
-  // Carga inicial por hash o default
-  const target = (location.hash || "#historialpaciente").replace("#", "");
-  loadView(target);
+  const initialTarget = (location.hash || "#historialpaciente").replace("#", "");
+  const initialLink = Array.from(links).find((l) => l.dataset.view === initialTarget) || links[0];
+
+  if (initialLink) {
+    links.forEach((l) => l.classList.toggle("is-active", l === initialLink));
+    loadView(initialLink.dataset.view);
+  }
 }
 
 
@@ -1846,8 +1850,8 @@ async function initKineHorarioPage() {
       blocksByDay[dayKey] = (items || [])
   .filter(b => b.day === targetDayInt)
   .map(b => ({
-    start: String(b.start_time || b.start || b.startTime || "").slice(0, 5),
-    end:   String(b.end_time   || b.end   || b.endTime   || "").slice(0, 5),
+    start: String(b.start_time || "").slice(0, 5),
+    end:   String(b.end_time   || "").slice(0, 5),
   }))
   .filter(b => b.start && b.end);
 

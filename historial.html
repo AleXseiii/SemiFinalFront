@@ -32,23 +32,24 @@
     </header>
 
     <main class="history" aria-labelledby="history-title">
-      <div class="history__profile">
-        <aside class="history__sidebar" aria-label="Navegación del paciente"></aside>
-        <div class="history__avatar" aria-hidden="true"></div>
+      <aside class="sidebar history__nav-card" aria-label="Secciones de la cuenta">
+        <div class="sidebar__brand history__profile">
+          <div class="history__avatar" aria-hidden="true"></div>
           <div class="history__identity">
             <span class="history__label">Paciente</span>
             <strong class="history__name" data-profile-name>Valentina Rojas</strong>
             <p class="history__role" data-profile-subtitle>Rehabilitación musculoesquelética</p>
           </div>
       </div>
-  <nav class="history__menu" aria-label="Secciones de la cuenta">
-    <a class="history__menu-link is-active" data-view="perfilpaciente">Perfil</a>
-<a class="history_menu-link" data-view="historialpaciente">Historial</a>
-<a class="history_menu-link" data-view="videosapoyo">Videos de apoyo</a>
-  </nav>
-  <p class="history__help">
-    Puedes revisar tus datos y el avance de tu tratamiento en esta sección.
-  </p>
+        <p class="history__help">
+          Revisa tus datos, sesiones y recursos complementarios.
+        </p>
+        <nav class="sidebar__nav" aria-label="Navegación del paciente">
+          <a class="sidebar__link history__menu-link is-active" href="#historialpaciente" data-view="historialpaciente">Historial</a>
+          <a class="sidebar__link history__menu-link" href="#perfilpaciente" data-view="perfilpaciente">Perfil</a>
+          <a class="sidebar__link history__menu-link" href="#videosapoyo" data-view="videosapoyo">Videos de apoyo</a>
+        </nav>
+      </aside>
 
       <section class="history__content" id="dynamic-content">
         <header class="history__header">
@@ -115,6 +116,5 @@
 <script src="./api.js" type="module"></script>
 <script src="./request.js" type="module"></script>
 <script src="./app.js" type="module"></script>
-<script type="module" src="./app.js"></script>
 </body>
 </html>
