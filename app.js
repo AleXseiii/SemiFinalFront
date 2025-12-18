@@ -97,6 +97,84 @@ function safeParseJSON(str, fallback = null) {
   try { return JSON.parse(str); } catch { return fallback; }
 }
 
+function normalizeBookingPayload(data) {
+  if (!data) return null;
+
+  const startTime = data.startTime || data.start_time;
+  const endTime   = data.endTime   || data.end_time;
+  const kineId    = data.kinesiologistId || data.kinesiologist_id;
+
+  return {
+    ...data,
+    kinesiologistId: kineId,
+    startTime,
+    endTime,
+    serviceName: data.serviceName || data.service || data.treatment || data.service_title,
+    serviceDuration: data.serviceDuration || data.duration,
+    modality: data.modality || data.mode || "Presencial",
+  };
+}
+
+function appointmentCacheKey(booking) {
+  if (!booking) return "";
+  return [booking.kinesiologistId, booking.date, booking.startTime].join("|");
+}
+
+function readLastAppointmentCache() {
+  return safeParseJSON(localStorage.getItem("lastAppointment"), null);
+}
+
+function writeLastAppointmentCache(record) {
+  if (!record) return;
+  localStorage.setItem("lastAppointment", JSON.stringify(record));
+}
+
+async function bookAppointmentInBackend(pending, token) {
+  const normalized = normalizeBookingPayload(pending);
+
+  if (!normalized?.kinesiologistId || !normalized?.date || !normalized?.startTime) {
+    throw new Error("Faltan datos esenciales para crear la cita.");
+  }
+  if (!token) {
+    throw new Error("No se encontró el token de autenticación.");
+  }
+
+  const cacheKey = appointmentCacheKey(normalized);
+  const cached   = readLastAppointmentCache();
+  if (cached?.key === cacheKey && cached?.id) {
+    return cached;
+  }
+
+  const payload = {
+    kinesiologist_id: normalized.kinesiologistId,
+    date: normalized.date,
+    start_time: normalized.startTime,
+    end_time: normalized.endTime || null,
+    treatment: normalized.serviceName || "Sesión de kinesiología",
+    modality: normalized.modality || "Presencial",
+  };
+
+  const res = await fetch(`${BASE_URL}api/appointments/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Token ${token}`,
+      "ngrok-skip-browser-warning": "true",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.detail || data.message || "No se pudo registrar la cita.");
+  }
+
+  const appointmentId = data.appointment_id || data.id || data.appointment?.id || null;
+  const record = { key: cacheKey, id: appointmentId };
+  writeLastAppointmentCache(record);
+  return record;
+}
+
 function startOfWeekMonday(date) {
   const d = new Date(date);
   const day = d.getDay(); // 0=Dom ... 6=Sáb
@@ -458,7 +536,7 @@ async function initSchedulePage() {
   const urlKineId = params.get("kineId");
 
   // pendingBooking viene desde agendar.html
-  let pending = safeParseJSON(localStorage.getItem("pendingBooking"), {}) || {};
+  let pending = normalizeBookingPayload(safeParseJSON(localStorage.getItem("pendingBooking"), {}) || {}) || {};
 
   let professionals = [];
   try {
@@ -575,7 +653,9 @@ async function initSchedulePage() {
     const b = document.createElement("button");
     b.type = "button";
     b.className = "schedule-slot";
-    b.textContent = (slot.start_time || "").slice(0, 5);
+    const startTxt = (slot.start_time || "").slice(0, 5);
+    const endTxt = (slot.end_time || "").slice(0, 5);
+    b.textContent = endTxt ? `${startTxt} - ${endTxt}` : startTxt;
 
     b.addEventListener("click", () => {
       document.querySelectorAll(".schedule-slot").forEach((x) => x.classList.remove("is-selected"));
@@ -584,15 +664,17 @@ async function initSchedulePage() {
       selectedSlot = slot;
       const iso = slot.date || selectedDayISO;
       const time = (slot.start_time || "").slice(0, 5);
-      setSelectionLabel(`${iso} • ${time}`);
+      const endTime = (slot.end_time || "").slice(0, 5);
+      const rangeLabel = endTime ? `${time}-${endTime}` : time;
+      setSelectionLabel(`${iso} • ${rangeLabel}`);
 
       // Actualizar pendingBooking con fecha/hora
-      pending = {
+      pending = normalizeBookingPayload({
         ...pending,
         date: iso,
         startTime: slot.start_time,
         endTime: slot.end_time || null,
-      };
+      }) || {};
       localStorage.setItem("pendingBooking", JSON.stringify(pending));
 
       confirmBtn.disabled = false;
@@ -883,9 +965,11 @@ function initPatientDataPage() {
 
       // 👈 AQUÍ ESTABA EL BUG: startTime vs start_time
       const start = pending.startTime || pending.start_time;
+      const end = pending.endTime || pending.end_time;
       if (selectionEl && pending.date && start) {
         const hora = start.slice(0, 5);
-        selectionEl.textContent = `${pending.date} a las ${hora} hrs`;
+        const horaFin = end ? end.slice(0, 5) : null;
+        selectionEl.textContent = `${pending.date} a las ${hora}${horaFin ? `-${horaFin}` : ""} hrs`;
       }
     }
   } catch (e) {
@@ -919,7 +1003,7 @@ function initPatientDataPage() {
 
       let selection;
       try {
-        selection = JSON.parse(rawSelection);
+        selection = normalizeBookingPayload(JSON.parse(rawSelection));
       } catch (e) {
         console.error("Error parseando pendingBooking:", e);
         alert("Ocurrió un problema con la hora seleccionada. Vuelve a escogerla.");
@@ -1011,36 +1095,49 @@ function initPatientDataPage() {
       } catch (e) {}
 
       if (data.token) {
-  localStorage.setItem("authToken", data.token);
-}
+        localStorage.setItem("authToken", data.token);
+      }
 
-if (data.role) {
-  localStorage.setItem("role", data.role);
-}
+      if (data.role) {
+        localStorage.setItem("role", data.role);
+      }
 
-if (data.user) {
-  localStorage.setItem("user", JSON.stringify(data.user));
-}
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
 
 
-      const confirmationData = {
+      const confirmationData = normalizeBookingPayload({
         ...selection,
         patientName: name,
         patientEmail: email,
         patientPhone: phone,
         patientRut: rut,
-      };
+       });
       localStorage.setItem("confirmationData", JSON.stringify(confirmationData));
+
+      try {
+        const booked = await bookAppointmentInBackend(confirmationData, data.token);
+        if (booked?.id) {
+          const updated = { ...confirmationData, appointmentId: booked.id };
+          localStorage.setItem("confirmationData", JSON.stringify(updated));
+        }
+      } catch (err) {
+        console.error("Error creando la cita en backend:", err);
+        alert("Tu cuenta se creó, pero la cita no pudo registrarse. Intenta seleccionar nuevamente el horario.");
+        return;
+      }
 
       // d) Mensaje de confirmación de reserva 🎉
       const horaBonita =
-        (selection.startTime || selection.start_time || "").slice(0, 5);
+        (confirmationData.startTime || confirmationData.start_time || "").slice(0, 5);
+      const horaFin = (confirmationData.endTime || confirmationData.end_time || "").slice(0, 5);
 
       alert(
         `¡Reserva creada con éxito!\n\n` +
         `Paciente: ${name}\n` +
-        `Fecha: ${selection.date}\n` +
-        `Hora: ${horaBonita} hrs`
+        `Fecha: ${confirmationData.date}\n` +
+        `Hora: ${horaBonita}${horaFin ? `-${horaFin}` : ""} hrs`
       );
 
       // e) Redirigir a la confirmación con el resumen
@@ -1236,21 +1333,41 @@ function initConfirmacionPage() {
   const phoneEl = document.querySelector("[data-confirmation-phone]");
   const rutEl = document.querySelector("[data-confirmation-rut]");
 
-  const pending =
+  const pending = normalizeBookingPayload(
     safeParseJSON(localStorage.getItem("confirmationData"), null) ||
-    safeParseJSON(localStorage.getItem("pendingBooking"), null);
+     safeParseJSON(localStorage.getItem("pendingBooking"), null)
+  );
   if (!pending) return;
 
+  const token = localStorage.getItem("authToken");
   const start = pending.startTime || pending.start_time;
+  const end = pending.endTime || pending.end_time;
 
   if (dateEl && pending.date) dateEl.textContent = pending.date;
-  if (timeEl && start) timeEl.textContent = `${String(start).slice(0, 5)} hrs`;
+  if (timeEl && start) {
+    const range = end ? `${String(start).slice(0, 5)} - ${String(end).slice(0, 5)} hrs` : `${String(start).slice(0, 5)} hrs`;
+    timeEl.textContent = range;
+  }
   if (professionalEl && pending.kinesiologistName) professionalEl.textContent = pending.kinesiologistName;
   if (modalityEl) modalityEl.textContent = pending.modality || "Presencial";
   if (patientEl && pending.patientName) patientEl.textContent = pending.patientName;
   if (emailEl && pending.patientEmail) emailEl.textContent = pending.patientEmail;
   if (phoneEl && pending.patientPhone) phoneEl.textContent = pending.patientPhone;
   if (rutEl && pending.patientRut) rutEl.textContent = pending.patientRut;
+
+  if (token && pending.kinesiologistId && pending.date && pending.startTime) {
+    bookAppointmentInBackend(pending, token)
+      .then((record) => {
+        if (record?.id) {
+          const updated = { ...pending, appointmentId: record.id };
+          localStorage.setItem("confirmationData", JSON.stringify(updated));
+        }
+      })
+      .catch((err) => {
+        console.error("No se pudo registrar la cita desde confirmación:", err);
+        alert("No se pudo registrar la cita en el sistema. Intenta nuevamente desde la selección de horario.");
+      });
+  }
 }
 
 async function initKinePanelView() {
@@ -1421,7 +1538,7 @@ async function initKinePanelView() {
     }
 
     setMsg(data.message || "Comentario guardado");
-    await loadUpcoming();
+    await updateStatus("completed");
   }
 
   refreshBtn?.addEventListener("click", () => loadUpcoming());
